@@ -31,25 +31,6 @@ export default class SessionService extends Service {
   @service utils;
 
   /**
-   * Creates a standardized response object
-   * @param {boolean} success - Whether the operation was successful
-   * @param {string} message - Human-readable message
-   * @param {*} data - Response data
-   * @param {string} errorCode - Machine-readable error code
-   * @returns {Object} Standardized response
-   */
-  #createResponse(success, message, data = null, errorCode = null) {
-    return {
-      success,
-      status: success ? RESPONSE_STATUS.SUCCESS : RESPONSE_STATUS.ERROR,
-      message,
-      data,
-      ...(errorCode && { errorCode }),
-      timestamp: new Date().toISOString(),
-    };
-  }
-
-  /**
    * Retrieves user data from localStorage by email
    * @param {string} email - User email
    * @returns {Object} Response object with user data or error
@@ -57,7 +38,7 @@ export default class SessionService extends Service {
   async getUserByEmail(email) {
     try {
       if (!email?.trim()) {
-        return this.#createResponse(
+        return this.utils.createResponse(
           false,
           'Email is required',
           null,
@@ -67,7 +48,7 @@ export default class SessionService extends Service {
 
       const usersData = localStorage.getItem('users');
       if (!usersData) {
-        return this.#createResponse(
+        return this.utils.createResponse(
           false,
           MESSAGES.USER_NOT_FOUND,
           null,
@@ -81,7 +62,7 @@ export default class SessionService extends Service {
       );
 
       if (!user) {
-        return this.#createResponse(
+        return this.utils.createResponse(
           false,
           MESSAGES.USER_NOT_FOUND,
           null,
@@ -92,14 +73,14 @@ export default class SessionService extends Service {
       // Don't return password in response for security
       const { password, ...userWithoutPassword } = user;
 
-      return this.#createResponse(
+      return this.utils.createResponse(
         true,
         MESSAGES.USER_FOUND,
         userWithoutPassword,
       );
     } catch (error) {
       console.error('Error retrieving user:', error);
-      return this.#createResponse(
+      return this.utils.createResponse(
         false,
         'An error occurred while retrieving user data',
         null,
@@ -129,7 +110,7 @@ export default class SessionService extends Service {
     try {
       const usersData = localStorage.getItem('users');
       if (!usersData) {
-        return this.#createResponse(
+        return this.utils.createResponse(
           false,
           MESSAGES.INVALID_CREDENTIALS,
           null,
@@ -145,7 +126,7 @@ export default class SessionService extends Service {
       );
 
       if (!user) {
-        return this.#createResponse(
+        return this.utils.createResponse(
           false,
           MESSAGES.INVALID_CREDENTIALS,
           null,
@@ -156,14 +137,14 @@ export default class SessionService extends Service {
       // Return user without password
       const { password: _, ...userWithoutPassword } = user;
 
-      return this.#createResponse(
+      return this.utils.createResponse(
         true,
         MESSAGES.VALIDATION_SUCCESS,
         userWithoutPassword,
       );
     } catch (error) {
       console.error('Error validating credentials:', error);
-      return this.#createResponse(
+      return this.utils.createResponse(
         false,
         'An error occurred during validation',
         null,
@@ -198,7 +179,7 @@ export default class SessionService extends Service {
     try {
       // Input validation
       if (!credentials?.email || !credentials?.password) {
-        return this.#createResponse(
+        return this.utils.createResponse(
           false,
           'Email and password are required',
           null,
@@ -224,7 +205,7 @@ export default class SessionService extends Service {
           }),
         );
 
-        return this.#createResponse(
+        return this.utils.createResponse(
           true,
           MESSAGES.LOGIN_SUCCESS,
           validationResponse.data,
@@ -234,7 +215,7 @@ export default class SessionService extends Service {
       return validationResponse;
     } catch (error) {
       console.error('Login error:', error);
-      return this.#createResponse(
+      return this.utils.createResponse(
         false,
         'An error occurred during login',
         null,
@@ -251,19 +232,22 @@ export default class SessionService extends Service {
   async registerNewUser(userDetails) {
     try {
       if (this.getUserByEmail(userDetails.email).message == MESSAGES.USER_FOUND)
-        return this.#createResponse(false, 'User Already Exists');
+        return this.utils.createResponse(false, 'User Already Exists');
 
       let allUsers = this.getAllUsers();
       let updatedUserDetails = this.setDefaultUserDetails(userDetails);
       allUsers.push(updatedUserDetails);
       await localStorage.setItem('users', JSON.stringify(allUsers));
-      return this.#createResponse(
+      return this.utils.createResponse(
         true,
         'User Registered Successfully',
         updatedUserDetails,
       );
     } catch (error) {
-        return this.#createResponse(false, "Error occured while user creation")
+      return this.utils.createResponse(
+        false,
+        'Error occured while user creation',
+      );
     }
   }
 
@@ -297,7 +281,7 @@ export default class SessionService extends Service {
     const currSession = JSON.parse(localStorage.getItem(sessionKey));
 
     if (!currSession || new Date() > new Date(currSession.expiration)) {
-      return this.#createResponse(
+      return this.utils.createResponse(
         false,
         MESSAGES.SESSION_EXPIRED,
         null,
@@ -315,6 +299,6 @@ export default class SessionService extends Service {
       }),
     );
 
-    return this.#createResponse(true, 'Session extended', currSession);
+    return this.utils.createResponse(true, 'Session extended', currSession);
   }
 }
