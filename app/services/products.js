@@ -1,12 +1,13 @@
 import Service from '@ember/service';
-import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 
 export default class ProductsService extends Service {
-  @tracked allProducts = [];
   @service utils;
 
 
+  get allProducts() {
+    return JSON.parse(localStorage.getItem('proucts').products);
+  }
   
   /**
    * Description placeholder
@@ -19,6 +20,18 @@ export default class ProductsService extends Service {
 
     if (!product) return this.utils.createResponse(false, 'Product not found.');
     return this.utils.createResponse(true, 'Product found', product);
+  }
+
+  
+  /**
+   * Get Multiple products by their ids.
+   *
+   * @param {Array} productIds 
+   * @returns {Array} - List of resolved products. 
+   */
+  getProductsByIds(productIds) {
+    let products = productIds.map(productId => this.getProductById(productId).data);
+    return products;
   }
 
   

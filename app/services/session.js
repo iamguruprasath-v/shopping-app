@@ -301,4 +301,13 @@ export default class SessionService extends Service {
 
     return this.utils.createResponse(true, 'Session extended', currSession);
   }
+
+  async updateUserToDB(userDetails) {
+    let allUsers = await this.getAllUsers();
+    allUsers.users = allUsers.users.map(user => {
+      if (user.id === userDetails.id) return userDetails
+      else return user;
+    })
+    this.currentUser = user;
+  }
 }
