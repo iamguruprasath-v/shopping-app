@@ -12,9 +12,9 @@ export async function initialize(application) {
     for (let val of defaultDataToSearch ) {
       console.log(a++);
       let data = await loadDefaultData(val);
+      if(val == 'users') data = setDefaultValuesForAllUser(data);
       localStorage.setItem(val, JSON.stringify(data));
     }
-    console.log('here')
     localStorage.setItem('hasInitialized', 'true')
 
   }
@@ -23,6 +23,18 @@ export async function initialize(application) {
   async function loadDefaultData(dataFor) {
     let response = await fetch(`https://dummyjson.com/${dataFor}?limit=500`);
     return await response.json();
+  }
+
+  function setDefaultValuesForAllUser(usersObj) {
+
+    usersObj.users = usersObj.users.map(user => ({
+      ...user,
+      orders: [],
+      favourites: [],
+      cart: []
+    }));
+
+    return usersObj;
   }
 }
 
