@@ -6,7 +6,7 @@ export default class ProductsService extends Service {
 
 
   get allProducts() {
-    return JSON.parse(localStorage.getItem('proucts').products);
+    return JSON.parse(localStorage.getItem('products')).products;
   }
   
   /**

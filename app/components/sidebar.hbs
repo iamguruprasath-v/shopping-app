@@ -1,0 +1,73 @@
+{{!-- app/components/sidebar.hbs --}}
+<div class="drawer lg:drawer-open">
+  <input id="filter-drawer" type="checkbox" class="drawer-toggle" checked={{this.isSidebarOpen}} {{on "change" this.toggleSidebar}}>
+
+  <div class="drawer-content flex flex-col">
+    <div class="lg:hidden p-4">
+      <label for="filter-drawer" class="btn btn-sm btn-outline">
+        ☰ Filters
+      </label>
+    </div>
+
+    <main class="flex-1 p-6 bg-base-100">
+      <h1 class="text-2xl font-bold mb-4">YourMart Products</h1>
+      {{yield this.filteredProds}}
+    </main>
+  </div>
+
+  <div class="drawer-side">
+    <label for="filter-drawer" class="drawer-overlay"></label>
+    <aside class="w-90 bg-base-200 p-4 space-y-6 h-[100vh]">
+      <h2 class="text-xl font-bold mb-2 underline">Filters</h2>
+
+      <h3 class="text-lg font-bold mb-2 pt-10">Categories</h3>
+      <div class="grid grid-cols-2 gap-2">
+        {{#each this.categories as |cat|}}
+          <label class="cursor-pointer label">
+            <input 
+              type="checkbox" 
+              class="checkbox checkbox-sm checkbox-primary mr-2"
+              value={{cat.slug}}
+              {{on "change" (fn this.toggleCategory cat.slug)}}
+            />
+            <span class="label-text text-sm">{{cat.name}}</span>
+          </label>
+        {{/each}}
+      </div>
+
+      {{#if this.toPopFilters}}
+      <div>
+        <h3 class="text-lg font-semibold mb-2">Price</h3>
+        <input 
+          type="range" 
+          min="0" 
+          max={{this.maxPrice}}
+          value={{this._price}} 
+          class="range range-primary w-full" 
+          {{on "input" this.updatePrice}}
+        />
+        <div class="flex justify-between text-sm mt-1 text-gray-600">
+          <span>Min: $0</span>
+          <span>Selected: ${{this.price}}</span>
+          <span>{{this.maxPrice}}</span>
+        </div>
+      </div>
+
+      <div class="dropdown w-full">
+        <div tabindex="0" role="button" class="btn btn-sm btn-outline w-full flex justify-between items-center">
+          {{if this.sortOrder this.sortOrder "Sort"}}
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full mt-1">
+          <li><button type="button" {{on "click" (fn this.setSort 0)}}>Price: Low to High</button></li>
+          <li><button type="button" {{on "click" (fn this.setSort 1)}}>Price: High to Low</button></li>
+        </ul>
+      </div>
+      {{/if}}
+    </aside>
+  </div>
+</div>
+
+
