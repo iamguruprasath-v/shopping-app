@@ -1,3 +1,4 @@
+<OfferedProducts />
 <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
   {{#each @searchFilteredProducts as |product|}}
     <div class="card bg-base-100 shadow-md hover:shadow-xl transition-shadow duration-300">
@@ -16,7 +17,7 @@
           <span class="text-primary font-bold text-lg">${{product.price}}</span>
         </div>
         <div class="card-actions mt-3">
-          <button class="btn btn-sm btn-primary btn-block">Add to Cart</button>
+          <button class="btn btn-sm btn-primary btn-block" type="button">Add to Cart</button>
         </div>
       </div>
     </div>
