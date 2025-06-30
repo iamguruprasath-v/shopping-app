@@ -11,4 +11,9 @@ Router.map(function () {
   this.route('cart');
   this.route('orders');
   this.route('logout');
+  this.route('login');
+  this.route('register');
+  this.route('product', {
+    path: '/product/:pr_id'
+  });
 });

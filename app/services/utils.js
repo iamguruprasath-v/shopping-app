@@ -1,5 +1,11 @@
 import Service from '@ember/service';
 
+
+const RESPONSE_STATUS = {
+  SUCCESS: 'success',
+  ERROR: 'error',
+};
+
 export default class UtilsService extends Service {
   /**
    * Returns a new Date object by extending the given date by a specified number of days.

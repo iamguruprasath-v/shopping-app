@@ -1,0 +1,19 @@
+<div>
+  <img
+    src={{get @product.images "0"}}
+    alt="Product Image"
+    class="rounded-lg w-full max-h-96 object-contain"
+  />
+
+  <h2 class="mt-4 text-2xl font-semibold">{{@product.title}}</h2>
+
+  <div class="flex gap-1 mt-2 text-yellow-500">
+    {{#each (range 0 this.roundedRating) as |i|}}
+      <i class="fa-solid fa-star"></i>
+    {{/each}}
+
+    {{#each (range 0 this.emptyStars) as |i|}}
+      <i class="fa-regular fa-star text-gray-300"></i>
+    {{/each}}
+  </div>
+</div>

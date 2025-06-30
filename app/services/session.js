@@ -2,11 +2,6 @@ import Service from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 
-// Constants for response messages and status codes
-const RESPONSE_STATUS = {
-  SUCCESS: 'success',
-  ERROR: 'error',
-};
 
 const MESSAGES = {
   USER_NOT_FOUND: 'User not found',
@@ -19,22 +14,20 @@ const MESSAGES = {
 
 const ERROR_CODES = {
   USER_NOT_FOUND: 'USER_NOT_FOUND',
-  USER_FOUND: 'USER_FOUND',
   INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
   VALIDATION_FAILED: 'VALIDATION_FAILED',
   SESSION_EXPIRED: 'SESSION_EXPIRED',
 };
 
 export default class SessionService extends Service {
-  @tracked currentUser = null;
-  @tracked isAuthenticated = false;
+  @tracked currentUser = JSON.parse(localStorage.getItem('ssd'));
+  get isAuthenticated() {
+    if(this.currentUser) return true;
+    else return false;
+  }
+
   @service utils;
 
-  /**
-   * Retrieves user data from localStorage by email
-   * @param {string} email - User email
-   * @returns {Object} Response object with user data or error
-   */
   async getUserByEmail(email) {
     try {
       if (!email?.trim()) {
@@ -42,7 +35,7 @@ export default class SessionService extends Service {
           false,
           'Email is required',
           null,
-          ERROR_CODES.INVALID_CREDENTIALS,
+          ERROR_CODES.INVALID_CREDENTIALS
         );
       }
 
@@ -52,13 +45,13 @@ export default class SessionService extends Service {
           false,
           MESSAGES.USER_NOT_FOUND,
           null,
-          ERROR_CODES.USER_NOT_FOUND,
+          ERROR_CODES.USER_NOT_FOUND
         );
       }
 
       const users = JSON.parse(usersData);
       const user = users.find(
-        (user) => user.email?.toLowerCase() === email.toLowerCase(),
+        (u) => u.email?.toLowerCase() === email.toLowerCase()
       );
 
       if (!user) {
@@ -66,99 +59,50 @@ export default class SessionService extends Service {
           false,
           MESSAGES.USER_NOT_FOUND,
           null,
-          ERROR_CODES.USER_NOT_FOUND,
+          ERROR_CODES.USER_NOT_FOUND
         );
       }
 
-      // Don't return password in response for security
       const { password, ...userWithoutPassword } = user;
-
-      return this.utils.createResponse(
-        true,
-        MESSAGES.USER_FOUND,
-        userWithoutPassword,
-      );
+      return this.utils.createResponse(true, MESSAGES.USER_FOUND, userWithoutPassword);
     } catch (error) {
       console.error('Error retrieving user:', error);
-      return this.utils.createResponse(
-        false,
-        'An error occurred while retrieving user data',
-        null,
-        'SYSTEM_ERROR',
-      );
+      return this.utils.createResponse(false, 'An error occurred', null, 'SYSTEM_ERROR');
     }
   }
 
-  /**
-   * Get all users from localstorage
-   *
-   * @async
-   * @returns {Object} - List of users
-   */
   async getAllUsers() {
-    let allUsers = await localStorage.getItem('users');
-    return JSON.parse(allUsers);
+    const data = localStorage.getItem('users');
+    return data ? JSON.parse(data).users : [];
   }
 
-  /**
-   * Validates user credentials
-   * @param {string} email - User email
-   * @param {string} password - User password
-   * @returns {Object} Validation response
-   */
   async #validateCredentials(email, password) {
     try {
-      const usersData = localStorage.getItem('users');
-      if (!usersData) {
-        return this.utils.createResponse(
-          false,
-          MESSAGES.INVALID_CREDENTIALS,
-          null,
-          ERROR_CODES.USER_NOT_FOUND,
-        );
-      }
-
-      const users = JSON.parse(usersData);
+      const users = await this.getAllUsers();
       const user = users.find(
-        (user) =>
-          user.email?.toLowerCase() === email.toLowerCase() &&
-          user.password === password,
+        (u) =>
+          u.email?.toLowerCase() === email.toLowerCase() &&
+          u.password === password
       );
+
 
       if (!user) {
         return this.utils.createResponse(
           false,
           MESSAGES.INVALID_CREDENTIALS,
           null,
-          ERROR_CODES.INVALID_CREDENTIALS,
+          ERROR_CODES.INVALID_CREDENTIALS
         );
       }
 
-      // Return user without password
       const { password: _, ...userWithoutPassword } = user;
-
-      return this.utils.createResponse(
-        true,
-        MESSAGES.VALIDATION_SUCCESS,
-        userWithoutPassword,
-      );
+      return this.utils.createResponse(true, MESSAGES.VALIDATION_SUCCESS, userWithoutPassword);
     } catch (error) {
-      console.error('Error validating credentials:', error);
-      return this.utils.createResponse(
-        false,
-        'An error occurred during validation',
-        null,
-        'VALIDATION_ERROR',
-      );
+      console.error('Credential validation failed:', error);
+      return this.utils.createResponse(false, 'Validation error', null, 'VALIDATION_ERROR');
     }
   }
 
-  /**
-   * Description placeholder
-   *
-   * @param {Object} userDetails
-   * @returns {Object} userDetails
-   */
   setDefaultUserDetails(userDetails) {
     return {
       ...userDetails,
@@ -168,114 +112,62 @@ export default class SessionService extends Service {
     };
   }
 
-  /**
-   * Authenticates user with email and password
-   * @param {Object} credentials - Login credentials
-   * @param {string} credentials.email - User email
-   * @param {string} credentials.password - User password
-   * @returns {Object} Login response
-   */
-  async login(credentials) {
+  async login({ email, password }) {
     try {
-      // Input validation
-      if (!credentials?.email || !credentials?.password) {
+      if (!email || !password) {
         return this.utils.createResponse(
           false,
           'Email and password are required',
           null,
-          ERROR_CODES.INVALID_CREDENTIALS,
+          ERROR_CODES.INVALID_CREDENTIALS
         );
       }
 
-      // Validate credentials
-      const validationResponse = await this.#validateCredentials(
-        credentials.email,
-        credentials.password,
+      const validation = await this.#validateCredentials(email, password);
+      if (!validation.success) return validation;
+
+      this.currentUser = validation.data;
+
+      localStorage.setItem(
+        'ssd',
+        JSON.stringify({
+          user: this.currentUser,
+          expiration: this.utils.extendDate(new Date(), 2),
+        })
       );
 
-      if (validationResponse.success) {
-        // Set session data
-        this.currentUser = validationResponse.data;
-        this.isAuthenticated = true;
-        localStorage.setItem(
-          'ssd',
-          JSON.stringify({
-            user: this.currentUser,
-            expiration: this.utils.extendDate(new Date(), 2),
-          }),
-        );
-
-        return this.utils.createResponse(
-          true,
-          MESSAGES.LOGIN_SUCCESS,
-          validationResponse.data,
-        );
-      }
-
-      return validationResponse;
-    } catch (error) {
-      console.error('Login error:', error);
-      return this.utils.createResponse(
-        false,
-        'An error occurred during login',
-        null,
-        'LOGIN_ERROR',
-      );
+      return this.utils.createResponse(true, MESSAGES.LOGIN_SUCCESS, this.currentUser);
+    } catch (err) {
+      console.error('Login error:', err);
+      return this.utils.createResponse(false, 'Login error', null, 'LOGIN_ERROR');
     }
   }
 
-  /**
-   * Registers new users with given details and with default values
-   * @param {Object} userDetails - Has details about user
-   * @returns {Object} Registered response
-   */
   async registerNewUser(userDetails) {
     try {
-      if (this.getUserByEmail(userDetails.email).message == MESSAGES.USER_FOUND)
-        return this.utils.createResponse(false, 'User Already Exists');
+      const existing = await this.getUserByEmail(userDetails.email);
+      if (existing.success) {
+        return this.utils.createResponse(false, 'User already exists');
+      }
 
-      let allUsers = this.getAllUsers();
-      let updatedUserDetails = this.setDefaultUserDetails(userDetails);
-      allUsers.push(updatedUserDetails);
-      await localStorage.setItem('users', JSON.stringify(allUsers));
-      return this.utils.createResponse(
-        true,
-        'User Registered Successfully',
-        updatedUserDetails,
-      );
-    } catch (error) {
-      return this.utils.createResponse(
-        false,
-        'Error occured while user creation',
-      );
+      const allUsers = await this.getAllUsers();
+      const newUser = this.setDefaultUserDetails(userDetails);
+
+      allUsers.push(newUser);
+      localStorage.setItem('users', JSON.stringify(allUsers));
+
+      return this.utils.createResponse(true, 'User Registered Successfully', newUser);
+    } catch (err) {
+      return this.utils.createResponse(false, 'Error during registration');
     }
   }
 
-  /**
-   * Logs out the current user
-   */
   logout() {
     this.currentUser = null;
     this.isAuthenticated = false;
+    localStorage.removeItem('ssd');
   }
 
-  /**
-   * Checks if user is currently authenticated
-   * @returns {boolean} Authentication status
-   */
-  get isUserAuthenticated() {
-    return this.isAuthenticated && this.currentUser !== null;
-  }
-
-  /**
-   * Attempts to extend the user's session if the current session is valid.
-   *
-   * - Retrieves session data (`ssd`) from localStorage.
-   * - If session is missing or expired, returns session expired response.
-   * - If valid, extends expiration by 2 days and updates localStorage.
-   *
-   * @returns {Object} Standard response indicating success or failure
-   */
   keepCurrUserLoggedIn() {
     const sessionKey = 'ssd';
     const currSession = JSON.parse(localStorage.getItem(sessionKey));
@@ -285,29 +177,33 @@ export default class SessionService extends Service {
         false,
         MESSAGES.SESSION_EXPIRED,
         null,
-        ERROR_CODES.SESSION_EXPIRED,
+        ERROR_CODES.SESSION_EXPIRED
       );
     }
 
     const newExpiryDate = this.utils.extendDate(new Date(), 2);
-
     localStorage.setItem(
       sessionKey,
-      JSON.stringify({
-        ...currSession,
-        expiration: newExpiryDate,
-      }),
+      JSON.stringify({ ...currSession, expiration: newExpiryDate })
     );
 
-    return this.utils.createResponse(true, 'Session extended', currSession);
+    this.currentUser = currSession.user;
+    this.isAuthenticated = true;
+
+    return this.utils.createResponse(true, 'Session extended', currSession.user);
   }
 
-  async updateUserToDB(userDetails) {
-    let allUsers = await this.getAllUsers();
-    allUsers.users = allUsers.users.map(user => {
-      if (user.id === userDetails.id) return userDetails
-      else return user;
-    })
-    this.currentUser = user;
+  async updateUserToDB(updatedUser) {
+    try {
+      const allUsers = await this.getAllUsers();
+      const updatedList = allUsers.map((user) =>
+        user.id === updatedUser.id ? updatedUser : user
+      );
+
+      localStorage.setItem('users', JSON.stringify(updatedList));
+      this.currentUser = updatedUser;
+    } catch (error) {
+      console.error('Error updating user to DB:', error);
+    }
   }
 }

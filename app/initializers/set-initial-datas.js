@@ -34,6 +34,8 @@ export async function initialize(application) {
       cart: []
     }));
 
+    localStorage.setItem('orders', JSON.stringify({orders: []}));
+    console.log(usersObj)
     return usersObj;
   }
 }

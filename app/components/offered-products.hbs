@@ -3,12 +3,12 @@
 <div class="flex justify-center mb-4">
   <div class="badge badge-lg badge-accent gap-2 text-lg">
     ⏰ Offer ends in:
-    <span class="countdown font-mono text-xl">
-      <span style="--value:{{this.offers.minutes}};"></span>m :
-      <span style="--value:{{this.offers.seconds}};"></span>s
+    <span class="font-mono text-xl">
+      {{this.offers.minutes}}m : {{this.offers.seconds}}s
     </span>
   </div>
 </div>
+
 
 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 p-4">
   {{#each this.offers.offeredProducts as |product|}}
@@ -34,7 +34,7 @@
             <span class="line-through text-sm text-gray-400 ml-2">${{product.oldPrice}}</span>
           {{/if}}
         </div>
-        <button class="btn btn-sm btn-primary btn-block mt-3">Add to Cart</button>
+        <button class="btn btn-sm btn-primary btn-block mt-3" type="button">Add to Cart</button>
       </div>
     </div>
   {{/each}}

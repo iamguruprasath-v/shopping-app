@@ -1,0 +1,51 @@
+{{page-title "Login"}}
+
+<div class="min-h-screen flex items-center justify-center bg-base-200">
+  <div class="card w-full max-w-md shadow-lg bg-base-100 p-6 space-y-4">
+    <h1 class="text-2xl font-bold text-center">Login</h1>
+
+
+    <div class="text-sm text-center min-h-[1.5rem] text-red-600">
+    {{#if this.loginInfo}}
+        {{this.loginInfo}}
+    {{/if}}
+    </div>
+
+
+    <form class="space-y-4" {{on "submit" this.login}}>
+      <label class="form-control w-full">
+        <div class="label"><span class="label-text">Email</span></div>
+        <input
+          type="email"
+          name="email"
+          placeholder="you@example.com"
+          class="input input-bordered w-full"
+          value={{this.email}}
+          {{on "input" this.onChangeHandler}}
+          required
+        />
+      </label>
+
+      <label class="form-control w-full">
+        <div class="label"><span class="label-text">Password</span></div>
+        <input
+          type="password"
+          name="password"
+          placeholder="••••••••"
+          class="input input-bordered w-full"
+          value={{this.password}}
+          {{on "input" this.onChangeHandler}}
+          required
+        />
+      </label>
+
+
+      <button class="btn btn-primary w-full mt-2" type="submit">Login</button>
+    </form>
+
+    <p class="text-sm text-center mt-2">
+      Don’t have an account?
+      <LinkTo @route="register" class="text-primary underline ml-1">Register</LinkTo>
+    </p>
+  </div>
+</div>

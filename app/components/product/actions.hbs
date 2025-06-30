@@ -1,0 +1,13 @@
+<div class="flex gap-4">
+  {{#unless this.isInCart}}
+    <button type="button" class="btn btn-success" {{on "click" this.addToCart}}>
+      Add to Cart
+    </button>
+  {{/unless}}
+
+  {{#unless this.isInFavourites}}
+    <button type="button" class="btn btn-secondary" {{on "click" this.addToFavourites}}>
+      Add to Favourites
+    </button>
+  {{/unless}}
+</div>
