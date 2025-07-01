@@ -2,7 +2,6 @@ import Service from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 
-
 const MESSAGES = {
   USER_NOT_FOUND: 'User not found',
   USER_FOUND: 'User found',
@@ -21,54 +20,34 @@ const ERROR_CODES = {
 
 export default class SessionService extends Service {
   @tracked currentUser = JSON.parse(localStorage.getItem('ssd'));
-  get isAuthenticated() {
-    if(this.currentUser) return true;
-    else return false;
-  }
-
+  
   @service utils;
 
+  get isAuthenticated() {
+    let expiryDate = localStorage.getItem('ssd_expiry');
+    if(!expiryDate || new Date() > expiryDate) return false;
+    else return true;
+  }
+
   async getUserByEmail(email) {
-    try {
-      if (!email?.trim()) {
-        return this.utils.createResponse(
-          false,
-          'Email is required',
-          null,
-          ERROR_CODES.INVALID_CREDENTIALS
-        );
-      }
-
-      const usersData = localStorage.getItem('users');
-      if (!usersData) {
-        return this.utils.createResponse(
-          false,
-          MESSAGES.USER_NOT_FOUND,
-          null,
-          ERROR_CODES.USER_NOT_FOUND
-        );
-      }
-
-      const users = JSON.parse(usersData);
-      const user = users.find(
-        (u) => u.email?.toLowerCase() === email.toLowerCase()
-      );
-
-      if (!user) {
-        return this.utils.createResponse(
-          false,
-          MESSAGES.USER_NOT_FOUND,
-          null,
-          ERROR_CODES.USER_NOT_FOUND
-        );
-      }
-
-      const { password, ...userWithoutPassword } = user;
-      return this.utils.createResponse(true, MESSAGES.USER_FOUND, userWithoutPassword);
-    } catch (error) {
-      console.error('Error retrieving user:', error);
-      return this.utils.createResponse(false, 'An error occurred', null, 'SYSTEM_ERROR');
+    if (!email?.trim()) {
+      return this.utils.createResponse(false, 'Email is required', null, ERROR_CODES.INVALID_CREDENTIALS);
     }
+
+    const usersData = localStorage.getItem('users');
+    if (!usersData) {
+      return this.utils.createResponse(false, MESSAGES.USER_NOT_FOUND, null, ERROR_CODES.USER_NOT_FOUND);
+    }
+
+    const users = JSON.parse(usersData);
+    const user = users.find((u) => u.email?.toLowerCase() === email.toLowerCase());
+
+    if (!user) {
+      return this.utils.createResponse(false, MESSAGES.USER_NOT_FOUND, null, ERROR_CODES.USER_NOT_FOUND);
+    }
+
+    const { password, ...userWithoutPassword } = user;
+    return this.utils.createResponse(true, MESSAGES.USER_FOUND, userWithoutPassword);
   }
 
   async getAllUsers() {
@@ -77,30 +56,17 @@ export default class SessionService extends Service {
   }
 
   async #validateCredentials(email, password) {
-    try {
-      const users = await this.getAllUsers();
-      const user = users.find(
-        (u) =>
-          u.email?.toLowerCase() === email.toLowerCase() &&
-          u.password === password
-      );
+    const users = await this.getAllUsers();
+    const user = users.find(
+      (u) => u.email?.toLowerCase() === email.toLowerCase() && u.password === password
+    );
 
-
-      if (!user) {
-        return this.utils.createResponse(
-          false,
-          MESSAGES.INVALID_CREDENTIALS,
-          null,
-          ERROR_CODES.INVALID_CREDENTIALS
-        );
-      }
-
-      const { password: _, ...userWithoutPassword } = user;
-      return this.utils.createResponse(true, MESSAGES.VALIDATION_SUCCESS, userWithoutPassword);
-    } catch (error) {
-      console.error('Credential validation failed:', error);
-      return this.utils.createResponse(false, 'Validation error', null, 'VALIDATION_ERROR');
+    if (!user) {
+      return this.utils.createResponse(false, MESSAGES.INVALID_CREDENTIALS, null, ERROR_CODES.INVALID_CREDENTIALS);
     }
+
+    const { password: _, ...userWithoutPassword } = user;
+    return this.utils.createResponse(true, MESSAGES.VALIDATION_SUCCESS, userWithoutPassword);
   }
 
   setDefaultUserDetails(userDetails) {
@@ -113,97 +79,82 @@ export default class SessionService extends Service {
   }
 
   async login({ email, password }) {
-    try {
-      if (!email || !password) {
-        return this.utils.createResponse(
-          false,
-          'Email and password are required',
-          null,
-          ERROR_CODES.INVALID_CREDENTIALS
-        );
-      }
-
-      const validation = await this.#validateCredentials(email, password);
-      if (!validation.success) return validation;
-
-      this.currentUser = validation.data;
-
-      localStorage.setItem(
-        'ssd',
-        JSON.stringify({
-          user: this.currentUser,
-          expiration: this.utils.extendDate(new Date(), 2),
-        })
-      );
-
-      return this.utils.createResponse(true, MESSAGES.LOGIN_SUCCESS, this.currentUser);
-    } catch (err) {
-      console.error('Login error:', err);
-      return this.utils.createResponse(false, 'Login error', null, 'LOGIN_ERROR');
+    if (!email || !password) {
+      return this.utils.createResponse(false, 'Email and password are required', null, ERROR_CODES.INVALID_CREDENTIALS);
     }
+
+    const validation = await this.#validateCredentials(email, password);
+    if (!validation.success) return validation;
+
+    this.currentUser = validation.data;
+
+    localStorage.setItem('ssd', JSON.stringify(this.currentUser));
+    localStorage.setItem('ssd_expiry', this.utils.extendDate(new Date(), 2));
+
+    return this.utils.createResponse(true, MESSAGES.LOGIN_SUCCESS, this.currentUser);
   }
 
   async registerNewUser(userDetails) {
-    try {
-      const existing = await this.getUserByEmail(userDetails.email);
-      if (existing.success) {
-        return this.utils.createResponse(false, 'User already exists');
-      }
-
-      const allUsers = await this.getAllUsers();
-      const newUser = this.setDefaultUserDetails(userDetails);
-
-      allUsers.push(newUser);
-      localStorage.setItem('users', JSON.stringify(allUsers));
-
-      return this.utils.createResponse(true, 'User Registered Successfully', newUser);
-    } catch (err) {
-      return this.utils.createResponse(false, 'Error during registration');
+    const existing = await this.getUserByEmail(userDetails.email);
+    if (existing.success) {
+      return this.utils.createResponse(false, 'User already exists');
     }
+
+    const allUsers = await this.getAllUsers();
+    const newUser = this.setDefaultUserDetails(userDetails);
+
+    allUsers.push(newUser);
+    localStorage.setItem('users', JSON.stringify({ users: allUsers }));
+
+    return this.utils.createResponse(true, 'User Registered Successfully', newUser);
   }
 
   logout() {
     this.currentUser = null;
-    this.isAuthenticated = false;
     localStorage.removeItem('ssd');
+    localStorage.removeItem('ssd_expiry');
   }
 
   keepCurrUserLoggedIn() {
-    const sessionKey = 'ssd';
-    const currSession = JSON.parse(localStorage.getItem(sessionKey));
+    const currUser = JSON.parse(localStorage.getItem('ssd'));
+    const expiry = localStorage.getItem('ssd_expiry');
 
-    if (!currSession || new Date() > new Date(currSession.expiration)) {
-      return this.utils.createResponse(
-        false,
-        MESSAGES.SESSION_EXPIRED,
-        null,
-        ERROR_CODES.SESSION_EXPIRED
-      );
+    if (!currUser || new Date() > new Date(expiry)) {
+      return this.utils.createResponse(false, MESSAGES.SESSION_EXPIRED, null, ERROR_CODES.SESSION_EXPIRED);
     }
 
-    const newExpiryDate = this.utils.extendDate(new Date(), 2);
-    localStorage.setItem(
-      sessionKey,
-      JSON.stringify({ ...currSession, expiration: newExpiryDate })
-    );
+    const newExpiry = this.utils.extendDate(new Date(), 2);
+    localStorage.setItem('ssd_expiry', newExpiry);
+    this.currentUser = currUser;
 
-    this.currentUser = currSession.user;
-    this.isAuthenticated = true;
-
-    return this.utils.createResponse(true, 'Session extended', currSession.user);
+    return this.utils.createResponse(true, 'Session extended', currUser);
   }
 
   async updateUserToDB(updatedUser) {
-    try {
-      const allUsers = await this.getAllUsers();
-      const updatedList = allUsers.map((user) =>
-        user.id === updatedUser.id ? updatedUser : user
-      );
+    const allUsers = await this.getAllUsers();
+    const updatedList = allUsers.map((user) => user.id === updatedUser.id ? updatedUser : user);
 
-      localStorage.setItem('users', JSON.stringify(updatedList));
-      this.currentUser = updatedUser;
-    } catch (error) {
-      console.error('Error updating user to DB:', error);
+    localStorage.setItem('users', JSON.stringify({ users: updatedList }));
+    this.currentUser = updatedUser;
+  }
+
+  addOrRemFav(id, flag) {
+    console.log(id, flag)
+    const users = JSON.parse(localStorage.getItem('users')).users;
+    const index = users.findIndex(user => user.email === this.currentUser.email);
+
+    if (index === -1) return;
+
+    if (flag === 1 && !users[index].favourites.includes(id)) {
+      users[index].favourites.push(id);
+      this.currentUser.favourites.push(id);
+    } else if (flag === 0 && users[index].favourites.includes(id)) {
+      users[index].favourites = users[index].favourites.filter(pid => pid !== id);
+      this.currentUser.favourites = this.currentUser.favourites.filter(pid => pid !== id);
     }
+
+    localStorage.setItem('users', JSON.stringify({ users }));
+    localStorage.setItem('ssd', JSON.stringify(this.currentUser));
+    this.currentUser = { ...this.currentUser };
   }
 }

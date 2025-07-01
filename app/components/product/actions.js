@@ -1,16 +1,21 @@
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
 
 export default class ProductActionsComponent extends Component {
   @service session;
+  @service offers;
+
+  @tracked showToast = false;
+  @tracked toastMsg = '';
 
   get isInCart() {
     return this.session.currentUser?.cart?.some(item => item.id === this.args.product.id);
   }
 
   get isInFavourites() {
-    return this.session.currentUser?.favourites?.some(item => item.id === this.args.product.id);
+    return this.session.currentUser?.favourites?.some(item => item === this.args.product.id);
   }
 
   @action
@@ -21,8 +26,14 @@ export default class ProductActionsComponent extends Component {
 
   @action
   addToFavourites() {
-    this.session.currentUser.favourites.pushObject(this.args.product);
-    this.session.updateUserToDB(this.session.currentUser);
+    this.session.addOrRemFav(this.args.product.id, 1);
+    this.triggerToast("Added To Favourites")
+  }
+
+  @action
+  removeFavourites() {
+    this.session.addOrRemFav(this.args.product.id, 0);
+    this.triggerToast("Removed From Favourites")
   }
 
   get roundedRating() {
@@ -33,4 +44,17 @@ export default class ProductActionsComponent extends Component {
   get emptyStars() {
     return 5 - this.roundedRating;
   }
+
+  @action
+  triggerToast(msg) {
+    this.toastMsg = msg;
+    this.showToast = true;
+
+    // Auto-dismiss after 2s
+    setTimeout(() => {
+      this.showToast = false;
+    }, 2000);
+  }
+
+  
 }

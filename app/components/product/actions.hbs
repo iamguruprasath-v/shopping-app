@@ -1,15 +1,23 @@
 <div class="flex flex-wrap gap-4">
+
+  {{#if this.showToast}}
+    <Toast @msg={{this.toastMsg}}/>
+  {{/if}}
   {{#unless this.isInCart}}
-    <button type="button" class="btn btn-success" {{on "click" this.addToCart}}>
+    <button type="button" class="btn btn-success w-full" {{on "click" this.addToCart}}>
       Add to Cart
     </button>
   {{/unless}}
 
-  {{#unless this.isInFavourites}}
-    <button type="button" class="btn btn-secondary" {{on "click" this.addToFavourites}}>
+  {{#if this.isInFavourites}}
+    <button type="button" class="btn btn-warning w-full" {{on "click" this.removeFavourites}}>
+      Remove From Favourites
+    </button>
+    {{else}}
+    <button type="button" class="btn btn-secondary w-full" {{on "click" this.addToFavourites}}>
       Add to Favourites
     </button>
-  {{/unless}}
+  {{/if}}
 
   <div class="w-full">
     <span class="badge badge-outline badge-error mt-1">Ratings</span>

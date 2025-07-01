@@ -1,0 +1,13 @@
+<div class="absolute top-2 right-2">
+  <button 
+    class="btn btn-sm btn-circle btn-ghost hover:bg-red-100"
+    type="button"
+    {{on "click" this.favClickHandler}}
+  >
+    {{#if this.isFavourite}}
+      <i class="fa-solid fa-heart text-red-500 text-lg"></i>
+    {{else}}
+      <i class="fa-regular fa-heart text-gray-400 text-lg"></i>
+    {{/if}}
+  </button>
+</div>

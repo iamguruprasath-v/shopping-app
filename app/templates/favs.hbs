@@ -1,2 +1,6 @@
 {{page-title "Favs"}}
-{{outlet}}
+{{#if @model.favProducts.length}}
+  <ListProducts @searchFilteredProducts={{@model.favProducts}} />
+{{else}}
+  <NoAvailable @resourceType="favourites" />
+{{/if}}
