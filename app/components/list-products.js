@@ -5,6 +5,7 @@ import { tracked } from '@glimmer/tracking';
 
 export default class ListProducts extends Component {
   @service session;
+  @service offers;
 
   @tracked showToast = false;
   @tracked toastMsg = '';
@@ -24,5 +25,10 @@ export default class ListProducts extends Component {
     setTimeout(() => {
       this.showToast = false;
     }, 2000);
+  }
+
+  @action 
+  prodIsInOffer(prId) {
+    return this.offers.isInOffer(prId)
   }
 }

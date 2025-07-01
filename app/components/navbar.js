@@ -10,4 +10,8 @@ export default class Navbar extends Component {
         console.log(this.session.isAuthenticated)
         return this.session.isAuthenticated;
     }
+
+    get favCount() {
+        return this.session.currentUser.favourites?.length;
+    }
 }

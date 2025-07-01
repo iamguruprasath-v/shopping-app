@@ -12,30 +12,40 @@
 
 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 p-4">
   {{#each this.offers.offeredProducts as |product|}}
-    <div class="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300">
-      <div class="relative">
-        <figure class="p-4">
-          <img src={{product.thumbnail}} alt={{product.title}} class="rounded-xl h-32 object-cover w-full" />
-        </figure>
+    <LinkTo @route="product" @model="{{product.id}}">
+    
+      <div class="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300">
+        <div class="relative">
+          <figure class="p-4">
+            <img src={{product.thumbnail}} alt={{product.title}} class="rounded-xl h-32 object-cover w-full" />
+          </figure>
 
-        {{#if product.discountPercentage}}
-          <div class="absolute top-2 left-2 badge badge-error text-white font-bold text-sm px-3 py-1">
-            -{{product.discountPercentage}}%
-          </div>
-        {{/if}}
-      </div>
-
-      <div class="card-body p-4">
-        <h2 class="card-title text-sm font-semibold">{{product.title}}</h2>
-        <p class="text-xs text-gray-600 line-clamp-2">{{product.description}}</p>
-        <div class="mt-2">
-          <span class="text-primary font-bold text-lg">${{product.price}}</span>
-          {{#if product.oldPrice}}
-            <span class="line-through text-sm text-gray-400 ml-2">${{product.oldPrice}}</span>
+          {{#if product.discountPercentage}}
+            <div class="absolute top-2 left-2 badge badge-error text-white font-bold text-sm px-3 py-1">
+              -{{product.discountPercentage}}%
+            </div>
           {{/if}}
         </div>
-        <button class="btn btn-sm btn-primary btn-block mt-3" type="button">Add to Cart</button>
+        {{#if (this.isLoggedIn)}}
+        <FavIcon @prod={{product}} @notify={{this.triggerToast}} />
+        {{/if}}
+
+        {{#if this.showToast}}
+          <Toast @msg={{this.toastMsg}}/>
+        {{/if}}
+
+        <div class="card-body p-4">
+          <h2 class="card-title text-sm font-semibold">{{product.title}}</h2>
+          <p class="text-xs text-gray-600 line-clamp-2">{{product.description}}</p>
+          <div class="mt-2">
+            <span class="text-primary font-bold text-lg">${{product.price}}</span>
+            {{#if product.oldPrice}}
+              <span class="line-through text-sm text-gray-400 ml-2">${{product.oldPrice}}</span>
+            {{/if}}
+          </div>
+          <button class="btn btn-sm btn-primary btn-block mt-3" type="button">Add to Cart</button>
+        </div>
       </div>
-    </div>
+    </LinkTo>
   {{/each}}
 </div>
