@@ -12,6 +12,6 @@ export default class Navbar extends Component {
     }
 
     get favCount() {
-        return this.session.currentUser.favourites?.length;
+        return this.session.currentUser?.favourites?.length;
     }
 }

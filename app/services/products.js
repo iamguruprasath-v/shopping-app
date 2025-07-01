@@ -10,7 +10,7 @@ export default class ProductsService extends Service {
   }
   
   /**
-   * Description placeholder
+   * get a product by its id
    *
    * @param {String} id 
    * @returns {Object} - if success result then book data else error response 
@@ -30,6 +30,7 @@ export default class ProductsService extends Service {
    * @returns {Array} - List of resolved products. 
    */
   getProductsByIds(productIds) {
+    console.log(productIds)
     let products = productIds.map(productId => this.getProductById(productId).data);
     return products;
   }
@@ -64,5 +65,9 @@ export default class ProductsService extends Service {
     updateProduct(productResponse.data);
   }
 
+  inStock(id) {
+    let prodResponse = this.getProductById(id);
+    return prodResponse.data.stock;
+  }
 
 }

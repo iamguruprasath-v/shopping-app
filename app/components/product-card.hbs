@@ -1,0 +1,52 @@
+<div class="card bg-base-100 shadow-md hover:shadow-xl transition-shadow duration-300 relative hover:bg-base-300 p-4 rounded">
+
+    {{#unless this.isInStock}}
+    <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none overflow-hidden z-20">
+        <div 
+        class="w-[200%] bg-red-600 text-white text-[10px] sm:text-lg font-bold uppercase text-center shadow-md py-5"
+        >
+        Out of Stock
+        </div>
+    </div>
+    {{/unless}}
+
+
+
+
+  <figure class="p-4">
+    <img src={{@product.thumbnail}} alt={{@product.title}} class="rounded-xl h-40 object-cover w-full" />
+  </figure>
+
+  {{#if @isLoggedIn}}
+    <FavIcon @prod={{@product}} @notify={{@triggerToast}} />
+  {{/if}}
+  <GlobalToast />
+
+  <div class="card-body p-4">
+    <h2 class="card-title text-sm font-semibold">
+      {{@product.title}}
+      {{#if this.isInOffer}}
+        <div class="badge badge-secondary text-xs">-{{@product.discountPercentage}}%</div>
+      {{/if}}
+    </h2>
+
+    <p class="text-xs line-clamp-2">{{@product.description}}</p>
+
+    <div class="mt-2">
+      <span class="text-primary font-bold text-lg">${{@product.price}}</span>
+    </div>
+
+    {{#if @isLoggedIn}}
+      <div class="card-actions mt-3">
+        <button 
+          type="button" 
+          class="btn btn-sm btn-primary btn-block"
+          {{on "click" this.addToCart}}
+          value={{@product.id}}
+        >
+          Add to Cart
+        </button>
+      </div>
+    {{/if}}
+  </div>
+</div>

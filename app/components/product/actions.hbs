@@ -8,6 +8,7 @@
       Add to Cart
     </button>
   {{/unless}}
+  <GlobalToast />
 
   {{#if this.isInFavourites}}
     <button type="button" class="btn btn-warning w-full" {{on "click" this.removeFavourites}}>

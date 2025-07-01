@@ -10,10 +10,18 @@ export default class CartService extends Service {
     get cart() {
         // Ensuring currentUser exists and has a cart
         const currentUser = this.session.currentUser;
-        if (!currentUser || !currentUser.cart) {
+        
+        if (!currentUser || currentUser.cart.length <= 0) {
             return [];
         }
-        return this.products.getProductByIds(currentUser.cart);
+        let products = []
+        currentUser.cart.forEach(cartItem => {
+            products.push({
+                product: this.products.getProductById(cartItem.pid).data,
+                quantity: cartItem.quantity
+            })
+        })
+        return products
     }
 
     getCartCount() {
@@ -27,10 +35,13 @@ export default class CartService extends Service {
      * @param {number} quantity - Quantity to add/update (default: 1)
      */
     async updateCart(pid, action, quantity = 1) {
+        console.log(pid, action, quantity)
         const currUser = this.session.currentUser; // Use consistent naming
         
         if (!currUser) {
-            throw new Error('No current user found');
+            return this.utils.createResponse(
+                false, 'Sign in or Register to Continue'
+            )
         }
 
         // Ensure cart exists
@@ -71,6 +82,9 @@ export default class CartService extends Service {
         }
         
         await this.session.updateUserToDB(currUser);
+        return this.utils.createResponse(
+            true, "Product Added To Cart"
+        )
     }
 
     /**

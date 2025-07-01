@@ -25,7 +25,7 @@ export default class SessionService extends Service {
 
   get isAuthenticated() {
     let expiryDate = localStorage.getItem('ssd_expiry');
-    if(!expiryDate || new Date() > expiryDate) return false;
+    if(!this.currentUser || !expiryDate || new Date() > expiryDate) return false;
     else return true;
   }
 
@@ -131,10 +131,13 @@ export default class SessionService extends Service {
   }
 
   async updateUserToDB(updatedUser) {
+    console.log(updatedUser)
     const allUsers = await this.getAllUsers();
     const updatedList = allUsers.map((user) => user.id === updatedUser.id ? updatedUser : user);
+    console.log(updatedList)
 
     localStorage.setItem('users', JSON.stringify({ users: updatedList }));
+    localStorage.setItem('ssd', JSON.stringify({...updatedUser}))
     this.currentUser = updatedUser;
   }
 

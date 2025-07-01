@@ -6,6 +6,8 @@ import { tracked } from '@glimmer/tracking';
 export default class ListProducts extends Component {
   @service session;
   @service offers;
+  @service('cart') cartService;
+  @service products;
 
   @tracked showToast = false;
   @tracked toastMsg = '';
@@ -14,6 +16,12 @@ export default class ListProducts extends Component {
   isLoggedIn() {
     console.log(this.session.isAuthenticated);
     return this.session.isAuthenticated;
+  }
+
+  @action
+  isProductInStock(id) {
+    let stockCount = this.products.inStock(id);
+    return stockCount > 0;
   }
 
   @action

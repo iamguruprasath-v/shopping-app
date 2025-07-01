@@ -1,0 +1,76 @@
+<div class="max-w-6xl mx-auto w-[85%] space-y-6 mt-6">
+  {{#each @cartProducts as |item|}}
+    <div class="flex flex-col md:flex-row items-start md:items-center gap-4 p-4 rounded-lg shadow border bg-base-100">
+      
+      <!-- Checkbox -->
+      <div>
+        <input type="checkbox" class="checkbox checkbox-primary" />
+      </div>
+
+      <!-- Image -->
+      <div class="w-24 h-24 flex-shrink-0">
+        <img src={{get item.product.images 0}} alt={{item.product.title}} class="w-full h-full object-cover rounded" />
+      </div>
+
+      <!-- Product Details -->
+      <div class="flex-1 space-y-1 text-sm">
+        <h2 class="text-lg font-semibold text-gray-800">{{item.product.brand}}</h2>
+        <h3 class="text-base font-medium text-gray-700">{{item.product.title}}</h3>
+        
+        <div class="flex items-center gap-2">
+          {{#if (gt item.product.stock 0)}}
+            <span class="badge badge-success badge-sm">In Stock</span>
+          {{else}}
+            <span class="badge badge-error badge-sm">Out of Stock</span>
+          {{/if}}
+
+          {{#if (this.isInOffer item.product.id)}}
+            <span class="badge badge-secondary badge-sm">-{{item.product.discountPercentage}}%</span>
+          {{/if}}
+
+          <span class="badge badge-outline badge-sm">Category: {{item.product.category}}</span>
+        </div>
+
+        <div class="flex items-center gap-2 text-xs text-gray-600">
+          <span>★ {{item.product.rating}} / 5</span>
+          <span>| Warranty: 1 year</span>
+          <span>| Delivery by {{item.product.deliveryETA}}</span>
+        </div>
+
+        <p class="text-xs text-gray-500 italic">{{item.product.shippingInformation}}</p>
+      </div>
+
+      <!-- Quantity & Actions -->
+      <div class="space-y-2 text-center min-w-[120px]">
+        <button class="btn btn-sm btn-outline btn-error w-full" type="button">Remove</button>
+
+        <div class="flex items-center justify-center gap-2">
+          <button class="btn btn-xs btn-outline btn-primary">-</button>
+          <span class="min-w-[2rem] text-center font-semibold">{{item.quantity}}</span>
+          <button class="btn btn-xs btn-outline btn-primary">+</button>
+        </div>
+      </div>
+
+      <!-- Price -->
+      <div class="text-right font-semibold text-lg min-w-[100px]">
+        {{#if (this.isInOffer item.product.id)}}
+          ₹{{calculate-offer item.product.discountPercentage item.product.price}}
+        {{else}}
+          ₹{{item.product.price}}
+        {{/if}}
+      </div>
+    </div>
+  {{/each}}
+
+  <!-- Subtotal & Actions -->
+  <div class="flex justify-between items-center mt-8 p-4 bg-base-200 rounded-lg shadow">
+    <div class="text-xl font-bold text-gray-800">
+      Subtotal ({{@cartProducts.length}} items): ₹{{this.subtotal}}
+    </div>
+
+    <div class="flex gap-4">
+      <button class="btn btn-outline btn-error">Clear Cart</button>
+      <button class="btn btn-primary">Proceed to Pay</button>
+    </div>
+  </div>
+</div>

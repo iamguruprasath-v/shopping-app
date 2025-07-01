@@ -1,2 +1,6 @@
 {{page-title "Cart"}}
-{{outlet}}
+{{#if (gt @model.length 0)}}
+  <ListCartProducts @cartProducts={{@model}} />
+{{else}}
+  <NoAvailable @resourceType="cart products" />
+{{/if}}

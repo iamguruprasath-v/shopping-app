@@ -5,7 +5,7 @@
         <span class="primary font-bold text-primary">YourMart</span>
       </LinkTo>
 
-      {{#if this.isLoggedIn}}
+      {{#if (this.isLoggedIn)}}
         <LocationModal />
       {{else}}
         <span class="text-sm text-gray-500">Login or Register to continue</span>
@@ -23,7 +23,7 @@
                      0 116.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 
                      0 010-6.364z" />
           </svg>
-          {{#if this.isLoggedIn}}
+          {{#if (this.isLoggedIn)}}
             <span class="badge badge-sm indicator-item">{{this.favCount}}</span>
           {{/if}}
         </div>
@@ -37,7 +37,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M5 8h14l1 12H4L5 8zM7 8V6a5 5 0 0110 0v2" />
           </svg>
-          {{#if this.isLoggedIn}}
+          {{#if (this.isLoggedIn)}}
             <span class="badge badge-sm badge-primary indicator-item">2</span>
           {{/if}}
         </div>
@@ -54,7 +54,7 @@
                        2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 
                        100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
-            {{#if this.isLoggedIn}}
+            {{#if (this.isLoggedIn)}}
               <span class="badge badge-sm indicator-item">8</span>
             {{/if}}
           </div>
@@ -62,17 +62,17 @@
         <div tabindex="0" class="card card-compact dropdown-content bg-base-100 z-10 mt-3 w-52 shadow-xl">
           <div class="card-body">
             <span class="text-lg font-bold">
-              {{if this.isLoggedIn "8 items" "Login to Start"}}
+              {{if (this.isLoggedIn) "8 items" "Login to Start"}}
             </span>
             <span class="text-info">
-              {{if this.isLoggedIn "Subtotal: $999" ""}}
+              {{if (this.isLoggedIn) "Subtotal: $999" ""}}
             </span>
             <div class="card-actions">
-              {{#if this.isLoggedIn}}
-                <LinkTo @route="cart"><button class="btn btn-primary btn-block">View cart</button></LinkTo>
+              {{#if (this.isLoggedIn)}}
+                <LinkTo @route="cart" class="w-full"><button class="btn btn-primary btn-block" type="button">View cart</button></LinkTo>
               {{else}}
-                <LinkTo @route="login"><button class="btn btn-primary btn-block">Login</button></LinkTo>
-                <LinkTo @route="register"><button class="btn btn-secondary btn-block">Register</button></LinkTo>
+                <LinkTo @route="login" class="w-full"><button class="btn btn-primary btn-block" type="button">Login</button></LinkTo>
+                <LinkTo @route="register" class="w-full"><button class="btn btn-secondary btn-block" type="button">Register</button></LinkTo>
               {{/if}}
             </div>
           </div>

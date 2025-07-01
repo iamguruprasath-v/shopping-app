@@ -6,6 +6,7 @@ import { tracked } from '@glimmer/tracking';
 export default class ProductActionsComponent extends Component {
   @service session;
   @service offers;
+  @service toast;
 
   @tracked showToast = false;
   @tracked toastMsg = '';
@@ -20,20 +21,28 @@ export default class ProductActionsComponent extends Component {
 
   @action
   addToCart() {
+    if(!this.session.currentUser) {
+      this.toast.show("Signin or Register to continue.");
+      return;
+    }
     this.session.currentUser.cart.pushObject(this.args.product);
     this.session.updateUserToDB(this.session.currentUser);
   }
 
   @action
   addToFavourites() {
+    if(!this.session.currentUser) {
+      this.toast.show("Signin or Register to continue.");
+      return;
+    }
     this.session.addOrRemFav(this.args.product.id, 1);
-    this.triggerToast("Added To Favourites")
+    this.toast.show("Added To Favourites")
   }
 
   @action
   removeFavourites() {
     this.session.addOrRemFav(this.args.product.id, 0);
-    this.triggerToast("Removed From Favourites")
+    this.toast.show("Removed From Favourites")
   }
 
   get roundedRating() {
