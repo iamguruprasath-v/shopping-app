@@ -1,4 +1,4 @@
-<div class="flex gap-4">
+<div class="flex flex-wrap gap-4">
   {{#unless this.isInCart}}
     <button type="button" class="btn btn-success" {{on "click" this.addToCart}}>
       Add to Cart
@@ -10,4 +10,20 @@
       Add to Favourites
     </button>
   {{/unless}}
+
+  <div class="w-full">
+    <span class="badge badge-outline badge-error mt-1">Ratings</span>
+
+    <div class="rating rating-sm">
+      {{#each (range 1 6) as |i|}}
+        <input
+          type="radio"
+          class="mask mask-star-2 bg-orange-500"
+          checked={{eq i this.roundedRating}}
+          disabled
+        />
+      {{/each}}
+    </div>
+  </div>
+
 </div>

@@ -9,7 +9,6 @@ export default class ProductRoute extends Route {
     console.log(params, params.pr_id)
     const response = this.products.getProductById(Number(params.pr_id));
     if (!response.status) {
-      // You could redirect or show error message
       return null;
     }
     return response.data;

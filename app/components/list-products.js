@@ -10,10 +10,7 @@ export default class ListProducts extends Component {
     }
 
     @action
-    isInOffer(id) {
-        let offeredProducts = this.offers.offeredProducts;
-        let prodInOffer = offeredProducts.find(prod => prod.id == id);
-        if (prodInOffer) return true;
-        else return false;
+    prodIsInOffer(id) {
+        return this.offers.isInOffer(id);
     }
 }

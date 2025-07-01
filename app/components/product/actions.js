@@ -24,4 +24,13 @@ export default class ProductActionsComponent extends Component {
     this.session.currentUser.favourites.pushObject(this.args.product);
     this.session.updateUserToDB(this.session.currentUser);
   }
+
+  get roundedRating() {
+    console.log(this.args.product)
+    return Math.round(this.args.product.rating);
+  }
+
+  get emptyStars() {
+    return 5 - this.roundedRating;
+  }
 }

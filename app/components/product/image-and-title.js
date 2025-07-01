@@ -1,12 +1,14 @@
 import Component from '@glimmer/component';
+import { service } from '@ember/service';
+import { action } from '@ember/object';
 
 export default class ProductImageAndTitleComponent extends Component {
-  get roundedRating() {
-    console.log(this.args.product)
-    return Math.round(this.args.product.rating);
+  @service offers;
+
+  @action
+  checkProdIsInoffer(id) {
+    console.log(this.offers)
+    return this.offers.isInOffer(id);
   }
 
-  get emptyStars() {
-    return 5 - this.roundedRating;
-  }
 }

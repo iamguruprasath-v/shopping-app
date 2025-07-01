@@ -24,7 +24,7 @@
         <div class="card-body p-4">
           <h2 class="card-title text-sm font-semibold">
             {{product.title}}
-            {{#if (this.isInOffer product.id)}}
+            {{#if (this.prodIsInOffer product.id)}}
               <div class="badge badge-secondary text-xs">-{{product.discountPercentage}}%</div>
             {{/if}}
           </h2>

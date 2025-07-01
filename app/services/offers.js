@@ -80,4 +80,11 @@ export default class OffersService extends Service {
       }
     }, 1000);
   }
+
+  isInOffer(prId) {
+    let offeredProducts = this.offeredProducts;
+    let prodInOffer = offeredProducts.find(prod => prod.id == prId);
+    if (prodInOffer) return true;
+    return false;
+  }
 }
