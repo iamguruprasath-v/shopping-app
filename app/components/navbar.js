@@ -31,7 +31,7 @@ export default class Navbar extends Component {
     getSubTotal() {
         let total = 0;
 
-        for (let prod of this.cart.cart || []) {
+        for (let prod of this.cart.allCartItems || []) {
           let price = prod.product.price;
 
           if (this.isInOffer(prod.product.id)) {
