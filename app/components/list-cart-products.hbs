@@ -1,4 +1,6 @@
+
 <div class="max-w-6xl mx-auto w-[85%] space-y-6 mt-6">
+  <GlobalToast />
   {{#each @cartProducts as |item|}}
     <div class="flex flex-col md:flex-row items-start md:items-center gap-4 p-4 rounded-lg shadow border bg-base-100">
       
@@ -25,6 +27,7 @@
           {{/if}}
 
           {{#if (this.isInOffer item.product.id)}}
+
             <span class="badge badge-secondary badge-sm">-{{item.product.discountPercentage}}%</span>
           {{/if}}
 
@@ -42,21 +45,22 @@
 
       <!-- Quantity & Actions -->
       <div class="space-y-2 text-center min-w-[120px]">
-        <button class="btn btn-sm btn-outline btn-error w-full" type="button">Remove</button>
+        <button class="btn btn-sm btn-outline btn-error w-full" type="button" {{on 'click' (fn this.removeItem item.product.id)}}>Remove</button>
 
         <div class="flex items-center justify-center gap-2">
-          <button class="btn btn-xs btn-outline btn-primary">-</button>
+          <button class="btn btn-xs btn-outline btn-primary" {{on 'click' (fn this.removeQuantity item.product.id)}}>-</button>
           <span class="min-w-[2rem] text-center font-semibold">{{item.quantity}}</span>
-          <button class="btn btn-xs btn-outline btn-primary">+</button>
+          <button class="btn btn-xs btn-outline btn-primary" {{on 'click' (fn this.addQuantity item)}}>+</button>
         </div>
       </div>
 
       <!-- Price -->
       <div class="text-right font-semibold text-lg min-w-[100px]">
         {{#if (this.isInOffer item.product.id)}}
-          ₹{{calculate-offer item.product.discountPercentage item.product.price}}
+          <span class="line-through text-gray-500 text-sm opacity-80">${{item.product.price}}</span>
+          ${{calculate-offer item.product.discountPercentage item.product.price}}
         {{else}}
-          ₹{{item.product.price}}
+          ${{item.product.price}}
         {{/if}}
       </div>
     </div>
@@ -65,11 +69,11 @@
   <!-- Subtotal & Actions -->
   <div class="flex justify-between items-center mt-8 p-4 bg-base-200 rounded-lg shadow">
     <div class="text-xl font-bold text-gray-800">
-      Subtotal ({{@cartProducts.length}} items): ₹{{this.subtotal}}
+      Subtotal ({{this.getCartQuantityCount}} items): ${{this.subtotal}}
     </div>
 
     <div class="flex gap-4">
-      <button class="btn btn-outline btn-error">Clear Cart</button>
+      <button class="btn btn-outline btn-error" {{on "click" this.clearCart}}>Clear Cart</button>
       <button class="btn btn-primary">Proceed to Pay</button>
     </div>
   </div>

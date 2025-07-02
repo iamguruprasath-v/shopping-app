@@ -39,4 +39,6 @@ export default class ListProducts extends Component {
   prodIsInOffer(prId) {
     return this.offers.isInOffer(prId)
   }
+
+
 }

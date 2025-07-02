@@ -55,17 +55,17 @@
                        100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
             {{#if (this.isLoggedIn)}}
-              <span class="badge badge-sm indicator-item">8</span>
+              <span class="badge badge-sm indicator-item">{{(this.getCartCount)}}</span>
             {{/if}}
           </div>
         </div>
         <div tabindex="0" class="card card-compact dropdown-content bg-base-100 z-10 mt-3 w-52 shadow-xl">
           <div class="card-body">
             <span class="text-lg font-bold">
-              {{if (this.isLoggedIn) "8 items" "Login to Start"}}
+              {{if (this.isLoggedIn) (concat (this.getCartCount) " items") "Login to Start"}}
             </span>
             <span class="text-info">
-              {{if (this.isLoggedIn) "Subtotal: $999" ""}}
+              {{if (this.isLoggedIn) (concat "Subtotal: $" (this.getSubTotal)) ""}}
             </span>
             <div class="card-actions">
               {{#if (this.isLoggedIn)}}

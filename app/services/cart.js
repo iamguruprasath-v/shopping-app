@@ -25,7 +25,11 @@ export default class CartService extends Service {
     }
 
     getCartCount() {
-        return this.cart.length;
+        let cart = this.cart;
+        let count = 0;
+        cart.forEach(cartPrd => count += cartPrd.quantity)
+
+        return count;
     }
 
     /**
@@ -83,7 +87,7 @@ export default class CartService extends Service {
         
         await this.session.updateUserToDB(currUser);
         return this.utils.createResponse(
-            true, "Product Added To Cart"
+            true, "Cart Updated"
         )
     }
 
