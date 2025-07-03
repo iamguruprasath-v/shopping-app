@@ -14,7 +14,6 @@ export default class ListProducts extends Component {
 
   @action
   isLoggedIn() {
-    console.log(this.session.isAuthenticated);
     return this.session.isAuthenticated;
   }
 

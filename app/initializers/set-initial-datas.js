@@ -10,7 +10,6 @@ export async function initialize(application) {
     let a = 1;
 
     for (let val of defaultDataToSearch ) {
-      console.log(a++);
       let data = await loadDefaultData(val);
       if(val == 'users') data = setDefaultValuesForAllUser(data);
       localStorage.setItem(val, JSON.stringify(data));
@@ -35,7 +34,6 @@ export async function initialize(application) {
     }));
 
     localStorage.setItem('orders', JSON.stringify({orders: []}));
-    console.log(usersObj)
     return usersObj;
   }
 }

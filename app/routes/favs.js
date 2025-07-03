@@ -9,7 +9,6 @@ export default class FavsRoute extends Route {
     const user = this.session.currentUser;
     const favIds = user?.favourites || [];
     const favProducts = this.products.getProductsByIds(favIds);
-    console.log(favProducts);
     
     return {
       favProducts,

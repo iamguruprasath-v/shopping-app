@@ -131,10 +131,8 @@ export default class SessionService extends Service {
   }
 
   async updateUserToDB(updatedUser) {
-    console.log(updatedUser)
     const allUsers = await this.getAllUsers();
     const updatedList = allUsers.map((user) => user.id === updatedUser.id ? updatedUser : user);
-    console.log(updatedList)
 
     localStorage.setItem('users', JSON.stringify({ users: updatedList }));
     localStorage.setItem('ssd', JSON.stringify({...updatedUser}))
@@ -142,7 +140,6 @@ export default class SessionService extends Service {
   }
 
   addOrRemFav(id, flag) {
-    console.log(id, flag)
     const users = JSON.parse(localStorage.getItem('users')).users;
     const index = users.findIndex(user => user.email === this.currentUser.email);
 

@@ -9,7 +9,6 @@ export default class Navbar extends Component {
 
     @action
     isLoggedIn() {
-        console.log(this.session.isAuthenticated)
         return this.session.isAuthenticated;
     }
 
@@ -27,20 +26,4 @@ export default class Navbar extends Component {
         return this.offers.isInOffer(id);
     }
 
-    @action
-    getSubTotal() {
-        let total = 0;
-
-        for (let prod of this.cart.allCartItems || []) {
-          let price = prod.product.price;
-
-          if (this.isInOffer(prod.product.id)) {
-            price = this.calculateDiscountedAmount(prod.product.discountPercentage, prod.product.price);
-          }
-
-          total += price * prod.quantity;
-        }
-
-        return total.toFixed(2);
-  }
 }

@@ -22,15 +22,17 @@ export default class CartService extends Service {
       return;
     }
 
-    this.#syncCartItemsFromUser(user.cart);
+    this.allCartItems = user.cart;
   }
 
-  #syncCartItemsFromUser(cartList) {
-    // Always create a new array reference for reactivity
-    this.allCartItems = cartList.map(item => ({
+  loadCart() {
+    let cartDatas = this.allCartItems.map(item => ({
       product: this.products.getProductById(item.pid).data,
-      quantity: item.quantity
+      quantity: item.quantity,
+      selected: true
     }));
+
+    return cartDatas
   }
 
   // Make this a getter for automatic reactivity
@@ -53,20 +55,22 @@ export default class CartService extends Service {
   }
 
   addToCart(pid, quantity = 1) {
-    console.log("reaching addToCart");
     const user = this.session.currentUser;
     if (!user) {
       return this.utils.createResponse(false, 'Sign in or Register to Continue');
     }
 
-    const existing = user.cart.find(item => item.pid === pid);
-    if (existing) {
-      existing.quantity += quantity;
+    let carts = this.allCartItems;
+    const existing = carts.findIndex(item => item.pid === pid);
+    if (existing !== -1) {
+      carts[existing].quantity += 1;
     } else {
-      user.cart.push({ pid, quantity });
+      carts.push({ pid, quantity });
     }
 
-    this.#syncCartItemsFromUser(user.cart); // This creates new array reference
+    this.allCartItems = carts;
+    user.cart = carts;
+
     this.session.updateUserToDB(user);
     return this.utils.createResponse(true, 'Product added to cart');
   }
@@ -74,9 +78,10 @@ export default class CartService extends Service {
   removeFromCart(pid) {
     const user = this.session.currentUser;
     if (!user) return;
-    
-    user.cart = user.cart.filter(item => item.pid !== pid);
-    this.#syncCartItemsFromUser(user.cart); // This creates new array reference
+    let cart = this.allCartItems;
+    cart = cart.filter(item => item.pid !== pid);
+    this.allCartItems = cart;
+    user.cart = cart;
     this.session.updateUserToDB(user);
   }
 
@@ -84,47 +89,15 @@ export default class CartService extends Service {
     console.log("reaching updateQuantity", pid, deltaQuantity);
     const user = this.session.currentUser;
     if (!user) return;
+    let cart = this.allCartItems
     
-    const item = user.cart.find(i => i.pid === pid);
-    if (!item) return;
-
-    item.quantity += deltaQuantity;
-
-    if (item.quantity <= 0) {
-      this.removeFromCart(pid);
-    } else {
-      this.#syncCartItemsFromUser(user.cart); // This creates new array reference
-      this.session.updateUserToDB(user);
+    const index = cart.findIndex(i => i.pid === pid);
+    if (index !== -1) {
+      cart[index].quantity += deltaQuantity;
     }
-  }
-
-  // Legacy method for backward compatibility - maps to new methods
-  async updateCart(pid, action, quantity = 1) {
-    console.log("Legacy updateCart called:", pid, action, quantity);
-    
-    switch(action) {
-      case 'clear':
-        this.clearCart();
-        break;
-      case 'remove':
-        this.removeFromCart(pid);
-        break;
-      case 'update':
-      case 'add':
-        if (pid === 0) break; // Skip invalid pid
-        const existingItem = this.session.currentUser?.cart?.find(item => item.pid === pid);
-        if (existingItem) {
-          this.updateQuantity(pid, quantity);
-        } else if (quantity > 0) {
-          this.addToCart(pid, quantity);
-        }
-        break;
-      default:
-        console.warn(`Unknown cart action: ${action}`);
-        return this.utils.createResponse(false, `Unknown action: ${action}`);
-    }
-    
-    return this.utils.createResponse(true, 'Cart updated');
+    this.allCartItems = cart;
+    user.cart = cart;
+    this.session.updateUserToDB(user);
   }
 
   // Order helper logic remains same

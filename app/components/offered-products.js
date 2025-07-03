@@ -13,7 +13,6 @@ export default class OfferedProducts extends Component {
 
   @action
   isLoggedIn() {
-    console.log(this.session.isAuthenticated);
     return this.session.isAuthenticated;
   }
 

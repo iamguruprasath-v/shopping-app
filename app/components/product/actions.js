@@ -46,7 +46,6 @@ export default class ProductActionsComponent extends Component {
   }
 
   get roundedRating() {
-    console.log(this.args.product)
     return Math.round(this.args.product.rating);
   }
 

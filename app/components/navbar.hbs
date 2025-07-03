@@ -64,9 +64,6 @@
             <span class="text-lg font-bold">
               {{if (this.isLoggedIn) (concat (this.getCartCount) " items") "Login to Start"}}
             </span>
-            <span class="text-info">
-              {{if (this.isLoggedIn) (concat "Subtotal: $" (this.getSubTotal)) ""}}
-            </span>
             <div class="card-actions">
               {{#if (this.isLoggedIn)}}
                 <LinkTo @route="cart" class="w-full"><button class="btn btn-primary btn-block" type="button">View cart</button></LinkTo>

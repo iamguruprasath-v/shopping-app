@@ -20,13 +20,11 @@ export default class ProductCardComponent extends Component {
 
   @action
   async addToCart(event) {
-    console.log("reaching")
     event.preventDefault();
     event.stopPropagation();
 
     try {
-      let res = await this.cartService.updateCart(this.args.product.id, "add", 1);
-      console.log(res)
+      let res = await this.cartService.addToCart(this.args.product.id, 1);
       this.toast.show(res.message);
     } catch (error) {
       console.log(error)

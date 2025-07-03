@@ -30,7 +30,6 @@ export default class ProductsService extends Service {
    * @returns {Array} - List of resolved products. 
    */
   getProductsByIds(productIds) {
-    console.log(productIds)
     let products = productIds.map(productId => this.getProductById(productId).data);
     return products;
   }

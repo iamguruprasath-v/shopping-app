@@ -7,7 +7,6 @@ export default class ProductImageAndTitleComponent extends Component {
 
   @action
   checkProdIsInoffer(id) {
-    console.log(this.offers)
     return this.offers.isInOffer(id);
   }
 
