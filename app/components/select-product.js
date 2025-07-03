@@ -14,7 +14,7 @@ export default class SelectProduct extends Component {
         console.log("indeletion:", item)
         this.toggleSelection(item);
         this.allItems = this.allItems.filter(prod => prod.product.id !== item.product.id);
-        console.log(this.allItems)
+        if(this.allItems.length <= 0) this.selectedProducts = [];
         this.cartService.removeFromCart(item.product.id);
     }
 
