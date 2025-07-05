@@ -1,0 +1,59 @@
+{{#if this.isOpen}}
+<dialog id="pay_modal" class="modal modal-open" open>
+  <div class="modal-box max-w-3xl">
+    <h3 class="font-bold text-lg mb-4">Order Summary</h3>
+
+    <div class="overflow-x-auto">
+      <table class="table w-full text-sm">
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Offer</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each @selectedProducts as |item|}}
+            <tr>
+              <td>{{item.product.title}}</td>
+              <td>{{item.quantity}}</td>
+              <td>${{item.product.price}}</td>
+              <td>
+                {{#if (this.isInOffer item.product.id)}}
+                  {{item.product.discountPercentage}}%
+                {{else}}
+                  NA
+                {{/if}}
+              </td>
+              <td>
+                {{#if (this.isInOffer item.product.id)}}
+                  ${{this.calculateDiscountedPrice item.product.price item.product.discountPercentage item.quantity}}
+                {{else}}
+                  ${{this.calculateTotal item.product.price item.quantity}}
+                {{/if}}
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+
+    {{#if this.isPaying}}
+      <div class="mt-4 alert alert-info text-sm">
+        ⏳ Please wait a minute while we process your payment...
+      </div>
+    {{/if}}
+
+    <div class="modal-action">
+      <button class="btn btn-primary" type="button" {{on "click" this.payNow}} disabled={{this.isPaying}}>
+        Pay
+      </button>
+      <button class="btn" type="button" {{on "click" this.closeModal}}>
+        Close
+      </button>
+    </div>
+  </div>
+</dialog>
+{{/if}}

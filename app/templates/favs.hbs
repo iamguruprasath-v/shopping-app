@@ -2,5 +2,7 @@
 {{#if @model.favProducts.length}}
   <ListProducts @searchFilteredProducts={{@model.favProducts}} />
 {{else}}
-  <NoAvailable @resourceType="favourites" />
+  <div class="max-w-2xl mx-auto text-center mt-20 space-y-4">
+    <NoAvailable @resourceType="cart products" />
+  </div>
 {{/if}}

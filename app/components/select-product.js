@@ -10,7 +10,7 @@ export default class SelectProduct extends Component {
 
 
     @action
-    removeProduct(item) {
+removeProduct(item) {
         console.log("indeletion:", item)
         this.toggleSelection(item);
         this.allItems = this.allItems.filter(prod => prod.product.id !== item.product.id);

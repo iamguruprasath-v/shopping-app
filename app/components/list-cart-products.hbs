@@ -1,18 +1,33 @@
-
 <div class="max-w-6xl mx-auto w-[85%] space-y-6 mt-6">
   <GlobalToast />
-  
-  <SelectProduct @cartProducts={{@products}} as |selectedProducts| >
+
+  {{!-- Modal trigger state --}}
+  {{#if this.showPayModal}}
+    <OrderSummary 
+      @selectedProducts={{this.selectedProducts}} 
+      @onClose={{this.closeModal}} 
+      @onPay={{fn this.handlePaymentSuccess this.selectedProducts}} 
+    />
+  {{/if}}
+
+  <SelectProduct @cartProducts={{@products}} as |selectedProducts|>
+    {{!-- Store selected products for modal use --}}
+    {{this.setSelectedProducts selectedProducts}}
+
     {{!-- Subtotal & Actions --}}
     <div class="flex justify-between items-center mt-8 p-4 bg-base-200 rounded-lg shadow">
       <div class="text-xl font-bold text-gray-800">
-        Subtotal ({{this.getCartQuantityCount}} items): ${{this.calculateSubtotal selectedProducts}}
-
+        Subtotal ({{this.getCartQuantityCount}} items): 
+        ${{this.calculateSubtotal selectedProducts}}
       </div>
 
       <div class="flex gap-4">
-        <button class="btn btn-outline btn-error" type="button" {{on "click" @clearCart}}>Clear Cart</button>
-        <button class="btn btn-primary" type="button">Proceed to Pay</button>
+        <button class="btn btn-outline btn-error" type="button" {{on "click" @clearCart}}>
+          Clear Cart
+        </button>
+        <button class="btn btn-primary" type="button" {{on "click" this.openModal}}>
+          Proceed to Pay
+        </button>
       </div>
     </div>
   </SelectProduct>
