@@ -41,12 +41,9 @@ export default class ProductsService extends Service {
    * @param {Object} prod 
    */
   updateProduct(prod) {
-    this.allProducts = this.allProducts.map(product => {
-        if (prod.id == product.id) return product;
-        else return prod;
-    })
-
-    localStorage.setItem('products', JSON.stringify({products: this.allProducts}));
+    let all = this.allProducts;
+    const updated = all.map(p => p.id === prod.id ? prod : p);
+    localStorage.setItem('products', JSON.stringify({ products: updated }));
   }
 
   

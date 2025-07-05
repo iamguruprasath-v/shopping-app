@@ -1,0 +1,65 @@
+<div class="card bg-base-100 shadow-md p-4">
+  <div class="flex justify-between items-center">
+    <div>
+      <h2 class="font-semibold">Order #{{@order.id}}</h2>
+      <p class="text-sm text-gray-600">Ordered on: {{this.formattedDate}}</p>
+    </div>
+
+    <button class="btn btn-sm btn-outline" type="button" {{on "click" this.openModal}}>View</button>
+  </div>
+
+  <div class="mt-2 text-sm">
+    <p><strong>Products:</strong>
+      {{#if (and @order.products (is-array @order.products))}}
+        {{#each (range 0 (min 3 @order.products.length)) as |i|}}
+          {{get (get @order.products i) "product.title"}}
+          {{if (lt i (sub (min 3 @order.products.length) 1)) ", "}}
+        {{/each}}
+        {{#if (gt @order.products.length 3)}}...{{/if}}
+      {{else}}
+        <em>No products</em>
+      {{/if}}
+    </p>
+
+    <p><strong>Total Paid:</strong> ${{@order.total}}</p>
+    <p><strong>Status:</strong> {{if @order.isDelivered "Delivered" "Pending"}}</p>
+  </div>
+</div>
+
+{{#if this.isModalOpen}}
+  <dialog class="modal modal-open">
+    <div class="modal-box max-w-3xl">
+      <h3 class="font-bold text-lg mb-2">Order #{{@order.id}}</h3>
+      <p class="text-sm text-gray-600 mb-2">Ordered on: {{this.formattedDate}}</p>
+
+      <table class="table table-zebra w-full text-sm">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each @order.products as |item|}}
+            <tr>
+              <td>{{item.product.title}}</td>
+              <td>{{item.quantity}}</td>
+              <td>${{item.product.price}}</td>
+              <td>${{this.mul item.product.price item.quantity}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+
+      <div class="mt-4 font-bold text-right">
+        Total Paid: ${{@order.total}}
+      </div>
+
+      <div class="modal-action">
+        <button class="btn" type="button" {{on "click" this.closeModal}}>Close</button>
+      </div>
+    </div>
+  </dialog>
+{{/if}}

@@ -6,7 +6,7 @@
     <OrderSummary 
       @selectedProducts={{this.selectedProducts}} 
       @onClose={{this.closeModal}} 
-      @onPay={{fn this.handlePaymentSuccess this.selectedProducts}} 
+      @onPay={{fn this.handlePayment this.selectedProducts}} 
     />
   {{/if}}
 

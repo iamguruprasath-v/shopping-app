@@ -104,8 +104,8 @@ export default class CartService extends Service {
   setDefaultOrderDetails(orderDetails) {
     return {
       ...orderDetails,
-      isDelivered: false,
-      deliveredDate: '',
+      isDelivered: true,
+      deliveredDate: Date.now(),
     };
   }
 

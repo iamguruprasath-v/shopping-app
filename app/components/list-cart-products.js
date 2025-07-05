@@ -8,6 +8,7 @@ export default class ListCartProductsComponent extends Component {
   @service('cart') cartService;
   @service toast;
   @service router;
+  @service products;
 
   @tracked showPayModal = false;
   @tracked selectedProducts = [];
@@ -54,16 +55,35 @@ export default class ListCartProductsComponent extends Component {
   }
 
   @action
-  handlePaymentSuccess(selectedProducts) {
-    // 1. Remove paid products from cart
-    selectedProducts.forEach((item) => {
-      this.cartService.removeFromCart(item.product.id)
+  handlePayment(selectedProducts) {
+    // 1. Update stock & availability
+    selectedProducts.forEach(item => {
+      let prod = item.product;
+      prod.stock -= item.quantity;
+
+      if (prod.stock <= 0) {
+        prod.stock = 0;
+        prod.availability = 'Out of Stock';
+      }
+
+      this.products.updateProduct(prod);
     });
 
-    // 2. Optional: Show toast
-    this.toast.show("Payment successful. Items removed from cart.");
+    // 2. Create order
+    const order = this.cartService.createOrders({
+      products: selectedProducts,
+      total: this.calculateSubtotal(selectedProducts),
+    });
 
-    // 3. Optional: Navigate to success or orders page
+    // 3. Remove from cart
+    selectedProducts.forEach(item => {
+      this.cartService.removeFromCart(item.product.id);
+    });
+
+    // 4. Feedback
+    this.toast.show("Payment Successful! Order placed ✅");
+
+    // 5. Go to orders page
     this.router.transitionTo('orders');
   }
 
