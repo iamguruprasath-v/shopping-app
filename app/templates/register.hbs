@@ -1,28 +1,268 @@
 {{page-title "Register"}}
-<div class="min-h-screen flex items-center justify-center bg-base-200">
-  <div class="card w-full max-w-md shadow-lg bg-base-100 p-6 space-y-4">
-    <h1 class="text-2xl font-bold text-center">Register with YourMart</h1>
 
-    <label class="form-control w-full">
-      <div class="label"><span class="label-text">Name</span></div>
-      <input type="text" placeholder="Your name" class="input input-bordered w-full" />
-    </label>
+<div class="min-h-screen bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 flex items-center justify-center p-4">
+  <div class="card w-full max-w-lg shadow-2xl bg-base-100 border border-base-300">
+    
+    {{!-- Header with Icon --}}
+    <div class="card-body">
+      <div class="text-center mb-6">
+        <div class="avatar placeholder mb-4">
+          <div class="bg-primary text-primary-content rounded-full w-16 h-16">
+            <span class="text-2xl">🛒</span>
+          </div>
+        </div>
+        <h1 class="text-3xl font-bold text-base-content">Join YourMart</h1>
+        <p class="text-base-content/70 mt-2">Create your account to start shopping</p>
+      </div>
 
-    <label class="form-control w-full">
-      <div class="label"><span class="label-text">Email</span></div>
-      <input type="email" placeholder="you@example.com" class="input input-bordered w-full" />
-    </label>
+      {{!-- Progress Indicator --}}
+      <div class="flex justify-center mb-6">
+        <ul class="steps steps-horizontal w-full max-w-xs">
+          <li class="step step-primary">Account</li>
+          <li class="step">Details</li>
+          <li class="step">Complete</li>
+        </ul>
+      </div>
 
-    <label class="form-control w-full">
-      <div class="label"><span class="label-text">Password</span></div>
-      <input type="password" placeholder="••••••••" class="input input-bordered w-full" />
-    </label>
+      {{!-- Feedback Alert --}}
+      {{#if this.registerMessage}}
+        <div class="alert {{if this.registerSuccess "alert-success" "alert-error"}} mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            {{#if this.registerSuccess}}
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            {{else}}
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            {{/if}}
+          </svg>
+          <span>{{this.registerMessage}}</span>
+        </div>
+      {{/if}}
 
-    <button class="btn btn-primary w-full mt-2" type="button">Register</button>
+      <form class="space-y-6" {{on "submit" this.register}}>
+        
+        {{!-- Personal Information Section --}}
+        <div class="card bg-base-200/50 shadow-sm">
+          <div class="card-body p-4">
+            <h3 class="card-title text-lg mb-4">
+              <span class="badge badge-primary badge-sm">1</span>
+              Personal Information
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-medium">
+                    <span class="inline-block w-4 text-center">👤</span>
+                    Full Name
+                  </span>
+                </label>
+                <input 
+                  type="text" 
+                  name="name" 
+                  placeholder="Enter your full name"
+                  class="input input-bordered focus:input-primary" 
+                  {{on "input" this.handleInput}} 
+                  required 
+                />
+              </div>
 
-    <p class="text-sm text-center mt-2">
-      Already have an account? 
-      <LinkTo @route="login" class="text-primary underline ml-1">Login</LinkTo>
-    </p>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-medium">
+                    <span class="inline-block w-4 text-center">🏷️</span>
+                    Username
+                  </span>
+                </label>
+                <input 
+                  type="text" 
+                  name="username" 
+                  placeholder="Choose a username"
+                  class="input input-bordered focus:input-primary" 
+                  {{on "input" this.handleInput}} 
+                  required 
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{!-- Contact Information Section --}}
+        <div class="card bg-base-200/50 shadow-sm">
+          <div class="card-body p-4">
+            <h3 class="card-title text-lg mb-4">
+              <span class="badge badge-secondary badge-sm">2</span>
+              Contact Information
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-medium">
+                    <span class="inline-block w-4 text-center">📧</span>
+                    Email Address
+                  </span>
+                </label>
+                <input 
+                  type="email" 
+                  name="email" 
+                  placeholder="your@email.com"
+                  class="input input-bordered focus:input-primary" 
+                  {{on "input" this.handleInput}} 
+                  required 
+                />
+              </div>
+
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-medium">
+                    <span class="inline-block w-4 text-center">📱</span>
+                    Phone Number
+                  </span>
+                </label>
+                <input 
+                  type="tel" 
+                  name="phone" 
+                  placeholder="+1 (555) 123-4567"
+                  class="input input-bordered focus:input-primary" 
+                  {{on "input" this.handleInput}} 
+                  required 
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{!-- Address Section --}}
+        <div class="card bg-base-200/50 shadow-sm">
+          <div class="card-body p-4">
+            <h3 class="card-title text-lg mb-4">
+              <span class="badge badge-accent badge-sm">3</span>
+              Shipping Address
+            </h3>
+            
+            <div class="space-y-4">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-medium">
+                    <span class="inline-block w-4 text-center">🏠</span>
+                    Street Address
+                  </span>
+                </label>
+                <input 
+                  type="text" 
+                  name="address" 
+                  placeholder="123 Main Street"
+                  class="input input-bordered focus:input-primary" 
+                  {{on "input" this.handleInput}} 
+                  required 
+                />
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-medium">
+                      <span class="inline-block w-4 text-center">🌎</span>
+                      State/Province
+                    </span>
+                  </label>
+                  <input 
+                    type="text" 
+                    name="state" 
+                    placeholder="California"
+                    class="input input-bordered focus:input-primary" 
+                    {{on "input" this.handleInput}} 
+                    required 
+                  />
+                </div>
+
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-medium">
+                      <span class="inline-block w-4 text-center">📮</span>
+                      Postal Code
+                    </span>
+                  </label>
+                  <input 
+                    type="text" 
+                    name="postalCode" 
+                    placeholder="12345"
+                    class="input input-bordered focus:input-primary" 
+                    {{on "input" this.handleInput}} 
+                    required 
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{!-- Security Section --}}
+        <div class="card bg-base-200/50 shadow-sm">
+          <div class="card-body p-4">
+            <h3 class="card-title text-lg mb-4">
+              <span class="badge badge-info badge-sm">4</span>
+              Account Security
+            </h3>
+            
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-medium">
+                  <span class="inline-block w-4 text-center">🔒</span>
+                  Password
+                </span>
+              </label>
+              <input 
+                type="password" 
+                name="password" 
+                placeholder="Create a secure password"
+                class="input input-bordered focus:input-primary" 
+                {{on "input" this.handleInput}} 
+                required 
+              />
+              <label class="label">
+                <span class="label-text-alt text-base-content/60">
+                  Use 8+ characters with letters, numbers & symbols
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {{!-- Terms & Conditions --}}
+        <div class="form-control">
+          <label class="label cursor-pointer justify-start gap-3">
+            <input type="checkbox" class="checkbox checkbox-primary" required />
+            <span class="label-text">
+              I agree to the 
+              <a href="#" class="link link-primary">Terms of Service</a> 
+              and 
+              <a href="#" class="link link-primary">Privacy Policy</a>
+            </span>
+          </label>
+        </div>
+
+        {{!-- Submit Button --}}
+        <div class="form-control mt-8">
+          <button class="btn btn-primary btn-lg w-full gap-2" type="submit">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
+            Create Account
+          </button>
+        </div>
+      </form>
+
+      {{!-- Login Link --}}
+      <div class="divider">Already have an account?</div>
+      <div class="text-center">
+        <LinkTo @route="login" class="btn btn-outline btn-ghost gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+          </svg>
+          Sign In Instead
+        </LinkTo>
+      </div>
+    </div>
   </div>
 </div>
