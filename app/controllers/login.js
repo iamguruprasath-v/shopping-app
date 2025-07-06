@@ -4,32 +4,54 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 
 export default class LoginController extends Controller {
+  @service session;
+  @service router;
 
-    @service session;
-    @service router;
-    @tracked email = '';
-    @tracked password = '';
-    @tracked loginInfo = ''
+  @tracked email = '';
+  @tracked password = '';
+  @tracked loginInfo = '';
+  @tracked loginSuccess = null; // null for neutral, true/false for color logic
 
-    @action
-    async login(e) {
-        e.preventDefault();
-        if(!this.email || !this.password) this.errorDetails = 'please fill the required fields';
-        let loginResponse = await this.session.login({
-            email: this.email,
-            password: this.password
-        });
-        if(!loginResponse.success) {
-            this.loginInfo = loginResponse.message;
-        }
-        this.loginInfo = loginResponse.message;
-        setTimeout(() => this.router.transitionTo(''), 1000)
+  @action
+  async login(e) {
+    e.preventDefault();
+
+    // Client-side required field check
+    if (!this.email || !this.password) {
+      this.loginInfo = 'Please fill in both email and password';
+      this.loginSuccess = false;
+      return;
     }
 
+    const loginResponse = await this.session.login({
+      email: this.email,
+      password: this.password
+    });
 
-    @action
-    onChangeHandler(e) {
-        let {name, value} = e.target;
-        this[name] = value;
+    this.loginInfo = loginResponse.message;
+    this.loginSuccess = loginResponse.success;
+
+    this.email = '';
+    this.password = '';
+
+    if (this.loginSuccess) {
+      setTimeout(() => {
+        this.router.transitionTo('');
+        this.clearLoginStatus();
+      }, 1000);
+    } else {
+      setTimeout(() => this.clearLoginStatus(), 3000);
     }
+  }
+
+  clearLoginStatus() {
+    this.loginInfo = '';
+    this.loginSuccess = null;
+  }
+
+  @action
+  onChangeHandler(e) {
+    const { name, value } = e.target;
+    this[name] = value;
+  }
 }
