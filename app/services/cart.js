@@ -1,106 +1,89 @@
-// CART SERVICE
 import Service from '@ember/service';
 import { service } from '@ember/service';
-import { tracked } from '@glimmer/tracking';
 
 export default class CartService extends Service {
-  @service products;
   @service session;
+  @service products;
   @service utils;
 
-  @tracked allCartItems = this.session.currentUser?.cart || [];
+  // 🔁 Reactive getter
+  get allCartItems() {
+    return this.session.currentUser?.cart || [];
+  }
 
-  // constructor() {
-  //   super(...arguments);
-  //   this.#initializeCart();
-  // }
-
-  // #initializeCart() {
-  //   const user = this.session.currentUser;
-  //   if (!user || !Array.isArray(user.cart)) {
-  //     this.allCartItems = [];
-  //     return;
-  //   }
-
-  //   this.allCartItems = user.cart;
-  // }
+  getCartCount() {
+    return this.allCartItems.reduce((sum, item) => sum + item.quantity, 0);
+  }
 
   loadCart() {
-    let cartDatas = this.allCartItems.map(item => ({
+    return this.allCartItems.map(item => ({
       product: this.products.getProductById(item.pid).data,
       quantity: item.quantity,
       selected: true
     }));
-
-    return cartDatas
-  }
-
-  // Make this a getter for automatic reactivity
-  get cartCount() {
-    return this.allCartItems.reduce((count, item) => count + item.quantity, 0);
-  }
-
-  // Keep method for backward compatibility
-  getCartCount() {
-    return this.cartCount;
   }
 
   clearCart() {
     const user = this.session.currentUser;
     if (!user) return;
-    
-    user.cart = [];
-    this.allCartItems = []; // New array reference
-    this.session.updateUserToDB(user);
+
+    const updatedUser = { ...user, cart: [] };
+    this.session.updateUserToDB(updatedUser);
   }
 
   addToCart(pid, quantity = 1) {
     const user = this.session.currentUser;
-    if (!user) {
-      return this.utils.createResponse(false, 'Sign in or Register to Continue');
+    if (!user) return this.utils.createResponse(false, 'Sign in or Register to continue');
+
+    const prod = this.products.getProductById(pid);
+    if (!prod || prod.data.stock <= 0) {
+      return this.utils.createResponse(false, 'Product is out of stock');
     }
 
-    let carts = this.allCartItems;
-    const existing = carts.findIndex(item => item.pid === pid);
-    if (existing !== -1) {
-      carts[existing].quantity += 1;
+    let cart = [...this.allCartItems];
+    const existing = cart.find(item => item.pid === pid);
+    const currentQty = existing ? existing.quantity : 0;
+    const total = currentQty + quantity;
+
+    if (total > prod.data.stock) {
+      return this.utils.createResponse(false, `Only ${prod.data.stock - currentQty} left in stock`);
+    }
+
+    if (existing) {
+      existing.quantity = total;
     } else {
-      carts.push({ pid, quantity });
+      cart.push({ pid, quantity });
     }
 
-    this.allCartItems = carts;
-    user.cart = carts;
-
-    this.session.updateUserToDB(user);
+    const updatedUser = { ...user, cart };
+    this.session.updateUserToDB(updatedUser);
     return this.utils.createResponse(true, 'Product added to cart');
+  }
+
+  updateQuantity(pid, delta) {
+    const user = this.session.currentUser;
+    if (!user) return;
+
+    let cart = [...this.allCartItems];
+    const index = cart.findIndex(i => i.pid === pid);
+
+    if (index !== -1) {
+      cart[index].quantity += delta;
+    }
+
+    const updatedUser = { ...user, cart };
+    this.session.updateUserToDB(updatedUser);
   }
 
   removeFromCart(pid) {
     const user = this.session.currentUser;
     if (!user) return;
-    let cart = this.allCartItems;
-    cart = cart.filter(item => item.pid !== pid);
-    this.allCartItems = cart;
-    user.cart = cart;
-    this.session.updateUserToDB(user);
+
+    const cart = this.allCartItems.filter(i => i.pid !== pid);
+    const updatedUser = { ...user, cart };
+    this.session.updateUserToDB(updatedUser);
   }
 
-  updateQuantity(pid, deltaQuantity) {
-    console.log("reaching updateQuantity", pid, deltaQuantity);
-    const user = this.session.currentUser;
-    if (!user) return;
-    let cart = this.allCartItems
-    
-    const index = cart.findIndex(i => i.pid === pid);
-    if (index !== -1) {
-      cart[index].quantity += deltaQuantity;
-    }
-    this.allCartItems = cart;
-    user.cart = cart;
-    this.session.updateUserToDB(user);
-  }
-
-  // Order helper logic remains same
   setDefaultOrderDetails(orderDetails) {
     return {
       ...orderDetails,
@@ -121,16 +104,37 @@ export default class CartService extends Service {
 
       const newOrder = this.setDefaultOrderDetails({
         ...orderDetails,
+        userId: this.session.user.id,
         id: orders.length + 1,
         createdAt: new Date().toISOString(),
       });
+      console.log("new one", newOrder)
 
       orders.push(newOrder);
       localStorage.setItem('orders', JSON.stringify({ orders }));
       return newOrder;
     } catch (err) {
-      console.error('Error saving order:', err);
+      console.error('Order creation failed', err);
       throw err;
     }
   }
+
+  get orders() {
+    const user = this.session.currentUser;
+
+    if (!user || !user.id) {
+      return [];
+    }
+
+    try {
+      const data = localStorage.getItem('orders');
+      const parsed = data ? JSON.parse(data) : { orders: [] };
+
+      return parsed.orders.filter(order => order.userId === user.id);
+    } catch (err) {
+      console.error('Error parsing orders from localStorage:', err);
+      return [];
+    }
+  }
+
 }

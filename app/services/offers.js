@@ -58,11 +58,17 @@ export default class OffersService extends Service {
   pickRandomProducts(count) {
     const selected = [];
 
-    for (let i = 0; i < count && this.productPool.length > 0; i++) {
-      const randomIndex = Math.floor(Math.random() * this.productPool.length);
-      const prod = this.productPool.splice(randomIndex, 1)[0];
+    // Filter eligible products: stock > 5
+    let eligiblePool = this.productPool.filter(p => p.stock > 5);
+
+    for (let i = 0; i < count && eligiblePool.length > 0; i++) {
+      const randomIndex = Math.floor(Math.random() * eligiblePool.length);
+      const prod = eligiblePool.splice(randomIndex, 1)[0];
 
       selected.push({ ...prod, inOffer: true });
+
+      // Also remove from main pool to avoid repeats
+      this.productPool = this.productPool.filter(p => p.id !== prod.id);
     }
 
     return selected;

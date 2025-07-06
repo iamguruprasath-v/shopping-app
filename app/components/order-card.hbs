@@ -1,7 +1,7 @@
 <div class="flex justify-center px-4 py-6">
   <div class="card bg-gradient-to-br from-white to-gray-50 shadow-lg hover:shadow-xl transition-all duration-300 p-6 rounded-xl border border-gray-100 w-full max-w-4xl">
     
-    <!-- Header -->
+    {{!-- Header --}}
     <div class="flex justify-between items-start mb-4">
       <div class="flex-1">
         <h2 class="font-bold text-2xl text-primary mb-2 flex items-center gap-2">
@@ -27,10 +27,10 @@
       </button>
     </div>
 
-    <!-- Order Info -->
+    {{!-- Order Info --}}
     <div class="bg-white/70 backdrop-blur-sm rounded-lg p-4 space-y-3 border border-gray-100">
       
-      <!-- Products -->
+      {{!-- Products --}}
       <div class="flex items-start gap-2">
         <svg class="w-5 h-5 text-gray-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -58,7 +58,7 @@
         </div>
       </div>
 
-      <!-- Total -->
+      {{!-- Total --}}
       <div class="flex items-center gap-2">
         <svg class="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
@@ -68,7 +68,7 @@
         </p>
       </div>
 
-      <!-- Status -->
+      {{!-- Status --}}
       <div class="flex items-center gap-2">
         <svg class="w-5 h-5 {{if @order.isDelivered 'text-green-600' 'text-yellow-600'}} flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -84,12 +84,12 @@
   </div>
 </div>
 
-<!-- Modal -->
+{{!-- Modal --}}
 {{#if this.isModalOpen}}
   <dialog open class="modal modal-open">
     <div class="modal-box w-11/12 max-w-4xl animate-scale-in rounded-xl">
       
-      <!-- Modal Header -->
+      {{!-- Modal Header --}}
       <div class="bg-primary text-white px-6 py-4 rounded-t-xl">
         <div class="flex justify-between items-center">
           <div>
@@ -102,7 +102,7 @@
         </div>
       </div>
 
-      <!-- Modal Body -->
+      {{!-- Modal Body --}}
       <div class="p-6 max-h-[60vh] overflow-y-auto bg-base-100 space-y-6">
         <table class="table table-zebra w-full text-sm">
           <thead>
@@ -130,7 +130,7 @@
         </div>
       </div>
 
-      <!-- Modal Footer -->
+      {{!-- Modal Footer --}}
       <div class="modal-action px-6 py-4 bg-base-200 rounded-b-xl">
         <button class="btn" type="button" {{on "click" this.closeModal}}>Close</button>
       </div>

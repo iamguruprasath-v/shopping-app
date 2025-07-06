@@ -1,93 +1,100 @@
 <GlobalToast />
-{{! Checkbox }}
-<div>
-  <input 
-    type="checkbox" 
-    class="checkbox checkbox-primary" 
-    checked={{this.item.selected}}
-    {{on "change" this.updateItemSelectionStatus}}
-  />
-</div>
 
-{{! Image }}
-<div class="w-24 h-24 flex-shrink-0">
-  <img
-    src={{get this.item.product.images 0}}
-    alt={{this.item.product.title}}
-    class="w-full h-full object-cover rounded"
-  />
-</div>
+<div class="flex gap-4 items-start p-4 rounded shadow bg-base-100 hover:shadow-md transition duration-200 relative 
+            {{if (eq this.item.product.stock 0) "opacity-50 grayscale"}}">
 
-{{! Product Details }}
-<div class="flex-1 space-y-1 text-sm">
-  <h2 class="text-lg font-semibold text-gray-800">{{this.item.product.brand}}</h2>
-  <h3 class="text-base font-medium text-gray-700">{{this.item.product.title}}</h3>
+  {{!-- Checkbox --}}
+  <div class="{{if (eq this.item.product.stock 0) 'pointer-events-none'}}">
+    <input 
+      type="checkbox" 
+      class="checkbox checkbox-primary"
+      checked={{this.item.selected}}
+      disabled={{eq this.item.product.stock 0}}
+      {{on "change" this.updateItemSelectionStatus}}
+    />
+  </div>
 
-  <div class="flex items-center gap-2">
+  {{!-- Image --}}
+  <div class="w-24 h-24 flex-shrink-0">
+    <img
+      src={{get this.item.product.images 0}}
+      alt={{this.item.product.title}}
+      class="w-full h-full object-cover rounded"
+    />
+  </div>
+
+  {{!-- Product Details --}}
+  <div class="flex-1 space-y-1 text-sm">
+    <h2 class="text-lg font-semibold text-gray-800">{{this.item.product.brand}}</h2>
+    <h3 class="text-base font-medium text-gray-700">{{this.item.product.title}}</h3>
+
+    <div class="flex items-center gap-2 flex-wrap">
+      {{#if (gt this.item.product.stock 0)}}
+        <span class="badge badge-success badge-sm">In Stock</span>
+      {{else}}
+        <span class="badge badge-error badge-sm">Out of Stock</span>
+      {{/if}}
+
+      {{#if (this.isInOffer this.item.product.id)}}
+        <span class="badge badge-secondary badge-sm">-{{this.item.product.discountPercentage}}%</span>
+      {{/if}}
+
+      <span class="badge badge-outline badge-sm">Category: {{this.item.product.category}}</span>
+
+      {{#if (eq this.item.quantity this.item.product.stock)}}
+        <span class="badge badge-warning badge-sm">Max Stock</span>
+      {{/if}}
+    </div>
+
+    <div class="flex items-center gap-2 text-xs text-gray-600">
+      <span>★ {{this.item.product.rating}} / 5</span>
+      <span>| Warranty: 1 year</span>
+      <span>| Delivery by {{this.item.product.deliveryETA}}</span>
+    </div>
+
+    <p class="text-xs text-gray-500 italic">{{this.item.product.shippingInformation}}</p>
+  </div>
+
+  {{!-- Quantity & Actions --}}
+  <div class="space-y-2 text-center min-w-[120px]">
+    <button
+      class="btn btn-sm btn-outline btn-error w-full"
+      type="button"
+      {{on "click" this.removeFromCart}}
+    >Remove</button>
+
     {{#if (gt this.item.product.stock 0)}}
-      <span class="badge badge-success badge-sm">In Stock</span>
-    {{else}}
-      <span class="badge badge-error badge-sm">Out of Stock</span>
-    {{/if}}
+      <div class="flex items-center justify-center gap-2">
+        <button
+          class="btn btn-xs btn-outline btn-primary"
+          type="button"
+          {{on "click" this.reduceQuantity}}
+        >-</button>
 
+        <span class="min-w-[2rem] text-center font-semibold">
+          {{this.item.quantity}}
+        </span>
+
+        <button
+          class="btn btn-xs btn-outline btn-primary"
+          type="button"
+          {{on "click" this.addQuantity}}
+        >+</button>
+      </div>
+    {{/if}}
+  </div>
+
+  {{!-- Price --}}
+  <div class="text-right font-semibold text-lg min-w-[100px]">
     {{#if (this.isInOffer this.item.product.id)}}
-
-      <span
-        class="badge badge-secondary badge-sm"
-      >-{{this.item.product.discountPercentage}}%</span>
+      <span class="line-through text-gray-500 text-sm opacity-80">
+        ${{this.item.product.price}}
+      </span>
+      ${{calculate-offer this.item.product.discountPercentage this.item.product.price}}
+    {{else}}
+      ${{this.item.product.price}}
     {{/if}}
-
-    <span class="badge badge-outline badge-sm">Category:
-      {{this.item.product.category}}</span>
   </div>
-
-  <div class="flex items-center gap-2 text-xs text-gray-600">
-    <span>★ {{this.item.product.rating}} / 5</span>
-    <span>| Warranty: 1 year</span>
-    <span>| Delivery by {{this.item.product.deliveryETA}}</span>
-  </div>
-
-  <p
-    class="text-xs text-gray-500 italic"
-  >{{this.item.product.shippingInformation}}</p>
-</div>
-
-{{! Quantity & Actions }}
-
-<div class="space-y-2 text-center min-w-[120px]">
-  <button
-    class="btn btn-sm btn-outline btn-error w-full"
-    type="button"
-    {{on "click" this.removeFromCart}}
-  >Remove</button>
-
-  <div class="flex items-center justify-center gap-2">
-    <button
-      class="btn btn-xs btn-outline btn-primary"
-      type="button"
-      {{on "click" this.reduceQuantity}}
-    >-</button>
-    <span
-      class="min-w-[2rem] text-center font-semibold"
-    >{{this.item.quantity}}</span>
-    <button
-      class="btn btn-xs btn-outline btn-primary"
-      type="button"
-      {{on "click" this.addQuantity}}
-    >+</button>
-  </div>
-</div>
-
-{{! Price }}
-<div class="text-right font-semibold text-lg min-w-[100px]">
-  {{#if (this.isInOffer this.item.product.id)}}
-    <span
-      class="line-through text-gray-500 text-sm opacity-80"
-    >${{this.item.product.price}}</span>
-    ${{calculate-offer this.item.product.discountPercentage this.item.product.price}}
-  {{else}}
-    ${{this.item.product.price}}
-  {{/if}}
 </div>
 
 {{yield this.item}}

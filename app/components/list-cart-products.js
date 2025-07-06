@@ -70,7 +70,7 @@ export default class ListCartProductsComponent extends Component {
     });
 
     // 2. Create order
-    const order = this.cartService.createOrders({
+    const order = this.cartService.createOrders({ 
       products: selectedProducts,
       total: this.calculateSubtotal(selectedProducts),
     });

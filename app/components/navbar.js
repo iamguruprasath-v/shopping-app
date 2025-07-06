@@ -28,7 +28,9 @@ export default class Navbar extends Component {
 
     @action
     logout() {
-        this.session.logout();
+        if(confirm('Do you want to logout?')) {
+            this.session.logout();
+        }
     }
 
 }

@@ -5,7 +5,10 @@ import { service } from '@ember/service';
 
 export default class CartProducts extends Component {
     @service('cart') cartService;
-    @tracked cartItems = this.args.products;
+    get cartItems () {
+        let cartProds = this.cartService.loadCart();
+        return cartProds;
+    }
 
     @action
     clearCart() {   
