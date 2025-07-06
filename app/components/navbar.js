@@ -26,4 +26,9 @@ export default class Navbar extends Component {
         return this.offers.isInOffer(id);
     }
 
+    @action
+    logout() {
+        this.session.logout();
+    }
+
 }

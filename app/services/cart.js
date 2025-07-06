@@ -8,22 +8,22 @@ export default class CartService extends Service {
   @service session;
   @service utils;
 
-  @tracked allCartItems = [];
+  @tracked allCartItems = this.session.currentUser?.cart || [];
 
-  constructor() {
-    super(...arguments);
-    this.#initializeCart();
-  }
+  // constructor() {
+  //   super(...arguments);
+  //   this.#initializeCart();
+  // }
 
-  #initializeCart() {
-    const user = this.session.currentUser;
-    if (!user || !Array.isArray(user.cart)) {
-      this.allCartItems = [];
-      return;
-    }
+  // #initializeCart() {
+  //   const user = this.session.currentUser;
+  //   if (!user || !Array.isArray(user.cart)) {
+  //     this.allCartItems = [];
+  //     return;
+  //   }
 
-    this.allCartItems = user.cart;
-  }
+  //   this.allCartItems = user.cart;
+  // }
 
   loadCart() {
     let cartDatas = this.allCartItems.map(item => ({

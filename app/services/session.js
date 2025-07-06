@@ -65,8 +65,7 @@ export default class SessionService extends Service {
       return this.utils.createResponse(false, MESSAGES.INVALID_CREDENTIALS, null, ERROR_CODES.INVALID_CREDENTIALS);
     }
 
-    const { password: _, ...userWithoutPassword } = user;
-    return this.utils.createResponse(true, MESSAGES.VALIDATION_SUCCESS, userWithoutPassword);
+    return this.utils.createResponse(true, MESSAGES.VALIDATION_SUCCESS, user);
   }
 
   setDefaultUserDetails(userDetails) {
