@@ -19,7 +19,4 @@ export default class OrderCardComponent extends Component {
     this.isModalOpen = false;
   }
 
-  mul(a, b) {
-    return (a * b).toFixed(2);
-  }
 }
