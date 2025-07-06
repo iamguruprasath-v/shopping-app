@@ -1,5 +1,5 @@
 <h1 class="text-2xl font-bold text-center my-4">🔥 Hot Offers</h1>
-
+<GlobalToast />
 <div class="flex justify-center mb-4">
   <div class="badge badge-lg badge-accent gap-2 text-lg">
     ⏰ Offer ends in:
@@ -27,7 +27,7 @@
           {{/if}}
         </div>
         {{#if (this.isLoggedIn)}}
-        <FavIcon @prod={{product}} @notify={{this.triggerToast}} />
+        <FavIcon @prod={{product}}/>
         {{/if}}
 
         {{#if this.showToast}}
@@ -43,7 +43,18 @@
               <span class="line-through text-sm text-gray-400 ml-2">${{product.oldPrice}}</span>
             {{/if}}
           </div>
-          <button class="btn btn-sm btn-primary btn-block mt-3" type="button">Add to Cart</button>
+              {{#if @isLoggedIn}}
+                <div class="card-actions mt-3">
+                  <button 
+                    type="button" 
+                    class="btn btn-sm btn-primary btn-block"
+                    {{on "click" (fn this.addToCart product.id)}}
+                    value={{@product.id}}
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              {{/if}}
         </div>
       </div>
     </LinkTo>

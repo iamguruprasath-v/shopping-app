@@ -7,6 +7,7 @@ export default class ProductActionsComponent extends Component {
   @service session;
   @service offers;
   @service toast;
+  @service('cart') cartService;
 
   @tracked showToast = false;
   @tracked toastMsg = '';
@@ -25,8 +26,8 @@ export default class ProductActionsComponent extends Component {
       this.toast.show("Signin or Register to continue.");
       return;
     }
-    this.session.currentUser.cart.pushObject(this.args.product);
-    this.session.updateUserToDB(this.session.currentUser);
+    let res = this.cartService.addToCart(this.args.product.id, 1);
+    this.toast.show(res.message)
   }
 
   @action

@@ -7,6 +7,8 @@ export default class OfferedProducts extends Component {
   @service offers;
   
   @service session;
+  @service('cart') cartService;
+  @service toast;
 
   @tracked showToast = false;
   @tracked toastMsg = '';
@@ -25,5 +27,19 @@ export default class OfferedProducts extends Component {
     setTimeout(() => {
       this.showToast = false;
     }, 2000);
+  }
+
+  @action
+  async addToCart(id, event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    try {
+      let res = await this.cartService.addToCart(id, 1);
+      this.toast.show(res.message);
+    } catch (error) {
+      console.log(error)
+      this.toast.show("Unknown Error Occured");
+    }
   }
 }
