@@ -3,7 +3,7 @@
 <div class="min-h-screen bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 flex items-center justify-center p-4">
   <div class="card w-full max-w-lg shadow-2xl bg-base-100 border border-base-300">
     
-    {{!-- Header with Icon --}}
+
     <div class="card-body">
       <div class="text-center mb-6">
         <div class="avatar placeholder mb-4">
@@ -15,7 +15,7 @@
         <p class="text-base-content/70 mt-2">Create your account to start shopping</p>
       </div>
 
-      {{!-- Progress Indicator --}}
+
       <div class="flex justify-center mb-6">
         <ul class="steps steps-horizontal w-full max-w-xs">
           <li class="step step-primary">Account</li>
@@ -24,7 +24,7 @@
         </ul>
       </div>
 
-      {{!-- Feedback Alert --}}
+
       {{#if this.registerMessage}}
         <div class="alert {{if this.registerSuccess "alert-success" "alert-error"}} mb-4">
           <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
@@ -40,7 +40,7 @@
 
       <form class="space-y-6" {{on "submit" this.register}}>
         
-        {{!-- Personal Information Section --}}
+
         <div class="card bg-base-200/50 shadow-sm">
           <div class="card-body p-4">
             <h3 class="card-title text-lg mb-4">
@@ -86,7 +86,7 @@
           </div>
         </div>
 
-        {{!-- Contact Information Section --}}
+
         <div class="card bg-base-200/50 shadow-sm">
           <div class="card-body p-4">
             <h3 class="card-title text-lg mb-4">
@@ -132,7 +132,7 @@
           </div>
         </div>
 
-        {{!-- Address Section --}}
+
         <div class="card bg-base-200/50 shadow-sm">
           <div class="card-body p-4">
             <h3 class="card-title text-lg mb-4">
@@ -197,7 +197,7 @@
           </div>
         </div>
 
-        {{!-- Security Section --}}
+
         <div class="card bg-base-200/50 shadow-sm">
           <div class="card-body p-4">
             <h3 class="card-title text-lg mb-4">
@@ -229,7 +229,6 @@
           </div>
         </div>
 
-        {{!-- Terms & Conditions --}}
         <div class="form-control">
           <label class="label cursor-pointer justify-start gap-3">
             <input type="checkbox" class="checkbox checkbox-primary" required />
@@ -242,7 +241,6 @@
           </label>
         </div>
 
-        {{!-- Submit Button --}}
         <div class="form-control mt-8">
           <button class="btn btn-primary btn-lg w-full gap-2" type="submit">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -253,7 +251,6 @@
         </div>
       </form>
 
-      {{!-- Login Link --}}
       <div class="divider">Already have an account?</div>
       <div class="text-center">
         <LinkTo @route="login" class="btn btn-outline btn-ghost gap-2">
