@@ -13,7 +13,6 @@ export default class CartProducts extends Component {
     @action
     clearCart() {   
         if (confirm("Really Want to Clear the Cart?")) {
-            this.cartItems = [];
             this.cartService.clearCart();
         }
     }
