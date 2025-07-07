@@ -39,8 +39,6 @@ export default class LoginController extends Controller {
         this.router.transitionTo('');
         this.clearLoginStatus();
       }, 1000);
-    } else {
-      setTimeout(() => this.clearLoginStatus(), 3000);
     }
   }
 

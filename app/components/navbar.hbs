@@ -1,18 +1,29 @@
 <header class="fixed left-0 right-0 z-50 flex justify-center pointer-events-none">
   <div class="navbar max-w-7xl w-[95%] mx-auto px-4 bg-base-100/80 backdrop-blur-md shadow-md rounded-xl pointer-events-auto transition duration-300">
     <div class="flex-1 items-center gap-4">
-      <LinkTo @route="index" class="btn btn-ghost text-xl">
-        <span class="primary font-bold text-primary">YourMart</span>
-      </LinkTo>
 
-      {{#if (this.isLoggedIn)}}
-        <LocationModal />
-      {{else}}
-        <span class="text-sm text-gray-500">Login or Register to continue</span>
-      {{/if}}
+      {{!-- Brand + Location --}}
+      <div class="flex items-center gap-2">
+        <LinkTo @route="index" class="btn btn-ghost text-xl px-2">
+          <span class="primary font-bold text-primary">YourMart</span>
+        </LinkTo>
+
+        {{#if this.isLoggedIn}}
+          <div class="shadow-sm rounded-md">
+            <LocationModal />
+          </div>
+        {{/if}}
+      </div>
+
+      {{!-- Optional prompt if not logged in --}}
+      {{#unless this.isLoggedIn}}
+        <span class="text-sm text-gray-500 ml-4">Login or Register to continue</span>
+      {{/unless}}
+
     </div>
 
     <div class="flex-none gap-2">
+      
       {{!-- Favourites --}}
       <LinkTo @route="favs" class="btn btn-ghost btn-circle">
         <div class="indicator">
@@ -23,7 +34,7 @@
                      0 116.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 
                      0 010-6.364z" />
           </svg>
-          {{#if (this.isLoggedIn)}}
+          {{#if this.isLoggedIn}}
             <span class="badge badge-sm indicator-item">{{this.favCount}}</span>
           {{/if}}
         </div>
@@ -37,9 +48,6 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M5 8h14l1 12H4L5 8zM7 8V6a5 5 0 0110 0v2" />
           </svg>
-          {{#if (this.isLoggedIn)}}
-            <span class="badge badge-sm badge-primary indicator-item">2</span>
-          {{/if}}
         </div>
       </LinkTo>
 
@@ -54,30 +62,36 @@
                        2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 
                        100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
-            {{#if (this.isLoggedIn)}}
-              <span class="badge badge-sm indicator-item">{{(this.getCartCount)}}</span>
+            {{#if this.isLoggedIn}}
+              <span class="badge badge-sm indicator-item">{{this.cartCount}}</span>
             {{/if}}
           </div>
         </div>
         <div tabindex="0" class="card card-compact dropdown-content bg-base-100 z-10 mt-3 w-52 shadow-xl">
           <div class="card-body">
             <span class="text-lg font-bold">
-              {{if (this.isLoggedIn) (concat (this.getCartCount) " items") "Login to Start"}}
+              {{if this.isLoggedIn (concat this.cartCount " items") "Login to Start"}}
             </span>
             <div class="card-actions">
-              {{#if (this.isLoggedIn)}}
-                <LinkTo @route="cart" class="w-full"><button class="btn btn-primary btn-block" type="button">View cart</button></LinkTo>
+              {{#if this.isLoggedIn}}
+                <LinkTo @route="cart" class="w-full">
+                  <button class="btn btn-primary btn-block" type="button">View cart</button>
+                </LinkTo>
               {{else}}
-                <LinkTo @route="login" class="w-full"><button class="btn btn-primary btn-block" type="button">Login</button></LinkTo>
-                <LinkTo @route="register" class="w-full"><button class="btn btn-secondary btn-block" type="button">Register</button></LinkTo>
+                <LinkTo @route="login" class="w-full">
+                  <button class="btn btn-primary btn-block" type="button">Login</button>
+                </LinkTo>
+                <LinkTo @route="register" class="w-full">
+                  <button class="btn btn-secondary btn-block" type="button">Register</button>
+                </LinkTo>
               {{/if}}
             </div>
           </div>
         </div>
       </div>
 
-      {{!-- Avatar --}}
-      {{#if (this.isLoggedIn)}}
+      {{!-- Auth Controls --}}
+      {{#if this.isLoggedIn}}
         <button class="btn btn-error btn-sm px-4" type="button" {{on "click" this.logout}}>
           Logout
         </button>
@@ -85,6 +99,7 @@
         <LinkTo @route="login" class="btn btn-outline btn-sm">Login</LinkTo>
         <LinkTo @route="register" class="btn btn-primary btn-sm">Register</LinkTo>
       {{/if}}
+
     </div>
   </div>
 </header>

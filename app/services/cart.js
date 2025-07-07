@@ -12,7 +12,7 @@ export default class CartService extends Service {
   }
 
   getCartCount() {
-    return this.allCartItems.reduce((sum, item) => sum + item.quantity, 0);
+    return this.allCartItems.reduce((sum, item) => sum + Math.min(item.quantity, this.products.getStockAvailability(item.pid)), 0);
   }
 
   loadCart() {
@@ -60,7 +60,7 @@ export default class CartService extends Service {
     return this.utils.createResponse(true, 'Product added to cart');
   }
 
-  updateQuantity(pid, delta) {
+  updateQuantity(pid, quantity) {
     const user = this.session.currentUser;
     if (!user) return;
 
@@ -68,7 +68,7 @@ export default class CartService extends Service {
     const index = cart.findIndex(i => i.pid === pid);
 
     if (index !== -1) {
-      cart[index].quantity += delta;
+      cart[index].quantity += quantity;
     }
 
     const updatedUser = { ...user, cart };
@@ -89,6 +89,7 @@ export default class CartService extends Service {
       ...orderDetails,
       isDelivered: true,
       deliveredDate: Date.now(),
+      location: this.session.currentUser.address
     };
   }
 

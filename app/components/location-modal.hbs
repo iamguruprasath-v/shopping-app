@@ -1,1 +1,152 @@
-Your location
+{{!-- Location Button in Navbar --}}
+<div>
+  <button 
+    class="btn btn-ghost btn-sm max-w-xs text-left justify-start"
+    {{on "click" this.openModal}}
+    type="button"
+  >
+    <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+    </svg>
+    <span class="truncate text-sm">{{this.displayAddress}}</span>
+  </button>
+</div>
+
+{{!-- DaisyUI Modal using native <dialog> --}}
+{{#if this.isModalOpen}}
+  <dialog class="modal modal-open" {{did-insert this.handleModalMount}} {{on "click" this.handleBackdropClick}}>
+    <div class="modal-box w-11/12 max-w-2xl relative" {{on "click" this.stopPropagation}}>
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="font-bold text-lg">
+          {{#if this.isEditing}}Edit Your Address{{else}}Your Address{{/if}}
+        </h3>
+        <button class="btn btn-sm btn-circle btn-ghost" {{on "click" this.closeModal}}>✕</button>
+      </div>
+
+      {{#if this.isEditing}}
+        {{!-- Address Edit Form --}}
+        <form {{on "submit" this.saveAddress}} class="space-y-4">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-medium">Street Address</span>
+            </label>
+            <input 
+              type="text" 
+              name="address"
+              value={{this.address.address}}
+              placeholder="Enter your street address"
+              class="input input-bordered w-full"
+              {{on "input" this.handleChange}}
+              required
+            />
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-medium">State</span>
+              </label>
+              <input 
+                type="text" 
+                name="state"
+                value={{this.address.state}}
+                placeholder="Enter state"
+                class="input input-bordered w-full"
+                {{on "input" this.handleChange}}
+                required
+              />
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-medium">Postal Code</span>
+              </label>
+              <input 
+                type="text" 
+                name="postalcode"
+                value={{this.address.postalCode}}
+                placeholder="Enter postal code"
+                class="input input-bordered w-full"
+                {{on "input" this.handleChange}}
+                required
+              />
+            </div>
+          </div>
+
+          <div class="modal-action">
+            <button type="button" class="btn btn-outline" {{on "click" this.cancelEdit}}>Cancel</button>
+            <button type="submit" class="btn btn-primary" disabled={{this.isSaving}}>
+              {{#if this.isSaving}}
+                <span class="loading loading-spinner loading-sm"></span> Saving...
+              {{else}}Save Address{{/if}}
+            </button>
+          </div>
+        </form>
+
+      {{else}}
+        {{!-- View Mode --}}
+        {{#if this.currentAddress}}
+          <div class="space-y-4">
+            <div class="card bg-base-200 p-4 space-y-2">
+              <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="font-medium">Address:</span>
+              </div>
+              <p class="text-base-content ml-7">{{this.currentAddress.address}}</p>
+
+              <div class="divider my-3"></div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <div class="flex items-center gap-2">
+                    <span class="font-medium">State:</span>
+                  </div>
+                  <p class="text-base-content ml-7">{{this.currentAddress.state}}</p>
+                </div>
+
+                <div class="space-y-2">
+                  <div class="flex items-center gap-2">
+                    <span class="font-medium">Postal Code:</span>
+                  </div>
+                  <p class="text-base-content ml-7">{{this.currentAddress.postalCode}}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-action">
+              <button class="btn btn-primary" {{on "click" this.enableEdit}}>
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+                Edit Address
+              </button>
+            </div>
+          </div>
+
+        {{else}}
+          {{!-- No Address --}}
+          <div class="text-center py-8">
+            <div class="mb-4">
+              <svg class="w-16 h-16 mx-auto text-base-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </div>
+            <h4 class="font-medium text-lg mb-2">No Address Set</h4>
+            <p class="text-base-content/70 mb-6">Add your delivery address to continue shopping.</p>
+            <button class="btn btn-primary" {{on "click" this.enableEdit}}>
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+              </svg>
+              Add Address
+            </button>
+          </div>
+        {{/if}}
+      {{/if}}
+    </div>
+  </dialog>
+{{/if}}

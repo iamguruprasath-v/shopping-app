@@ -1,6 +1,5 @@
 <div class="flex justify-center px-4 py-6">
   <div class="card bg-gradient-to-br from-white to-gray-50 shadow-lg hover:shadow-xl transition-all duration-300 p-6 rounded-xl border border-gray-100 w-full max-w-4xl">
-    
     {{!-- Header --}}
     <div class="flex justify-between items-start mb-4">
       <div class="flex-1">
@@ -110,7 +109,7 @@
               <th>Product</th>
               <th>Qty</th>
               <th>Unit Price</th>
-              <th>Total</th>
+              {{!-- <th>Total</th> --}}
             </tr>
           </thead>
           <tbody>
@@ -119,7 +118,7 @@
                 <td>{{item.product.title}}</td>
                 <td>{{item.quantity}}</td>
                 <td>${{item.product.price}}</td>
-                <td>${{mul item.product.price item.quantity}}</td>
+                {{!-- <td>${{mul item.product.price item.quantity}}</td> --}}
               </tr>
             {{/each}}
           </tbody>
@@ -128,6 +127,28 @@
         <div class="text-right font-bold text-lg mt-4">
           Total Paid: ${{@order.total}}
         </div>
+
+        {{!-- Delivery Address --}}
+        <div class="bg-gray-100 p-4 rounded-md border border-gray-200">
+          <h4 class="font-semibold text-gray-700 mb-1 flex items-center gap-2">
+            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17.657 16.657L13.414 12.414m0 0a4 4 0 10-5.657 5.657 4 4 0 005.657-5.657z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 14v.01" />
+            </svg>
+            Delivery Address
+          </h4>
+          {{#if @order.location}}
+          {{log @order.location}}
+            <p class="text-sm text-gray-600">
+              {{@order.location.address}}, {{@order.location.state}} – {{@order.location.postalcode}}
+            </p>
+          {{else}}
+            <p class="text-sm text-gray-500 italic">No delivery address available</p>
+          {{/if}}
+        </div>
+
       </div>
 
       {{!-- Modal Footer --}}

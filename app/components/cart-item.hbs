@@ -1,6 +1,6 @@
 <GlobalToast />
 
-<div class="flex gap-4 items-start p-4 rounded shadow bg-base-100 hover:shadow-md transition duration-200 relative 
+<div class="w-full flex gap-4 items-start p-4 rounded shadow bg-base-100 hover:shadow-md transition duration-200 relative 
             {{if (eq this.item.product.stock 0) "opacity-50 grayscale"}}">
 
   {{!-- Checkbox --}}
@@ -35,7 +35,7 @@
         <span class="badge badge-error badge-sm">Out of Stock</span>
       {{/if}}
 
-      {{#if (this.isInOffer this.item.product.id)}}
+      {{#if this.isInOffer}}
         <span class="badge badge-secondary badge-sm">-{{this.item.product.discountPercentage}}%</span>
       {{/if}}
 
@@ -86,7 +86,7 @@
 
   {{!-- Price --}}
   <div class="text-right font-semibold text-lg min-w-[100px]">
-    {{#if (this.isInOffer this.item.product.id)}}
+    {{#if this.isInOffer}}
       <span class="line-through text-gray-500 text-sm opacity-80">
         ${{this.item.product.price}}
       </span>

@@ -15,16 +15,7 @@
         <p class="text-base-content/70 mt-2">Create your account to start shopping</p>
       </div>
 
-
-      <div class="flex justify-center mb-6">
-        <ul class="steps steps-horizontal w-full max-w-xs">
-          <li class="step step-primary">Account</li>
-          <li class="step">Details</li>
-          <li class="step">Complete</li>
-        </ul>
-      </div>
-
-
+      {{!-- Feedback Alert --}}
       {{#if this.registerMessage}}
         <div class="alert {{if this.registerSuccess "alert-success" "alert-error"}} mb-4">
           <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
@@ -122,7 +113,7 @@
                 <input 
                   type="tel" 
                   name="phone" 
-                  placeholder="+1 (555) 123-4567"
+                  placeholder="+91 123 456 789"
                   class="input input-bordered focus:input-primary" 
                   {{on "input" this.handleInput}} 
                   required 
@@ -169,7 +160,7 @@
                   <input 
                     type="text" 
                     name="state" 
-                    placeholder="California"
+                    placeholder="Tamil Nadu"
                     class="input input-bordered focus:input-primary" 
                     {{on "input" this.handleInput}} 
                     required 
@@ -186,7 +177,7 @@
                   <input 
                     type="text" 
                     name="postalCode" 
-                    placeholder="12345"
+                    placeholder="123456"
                     class="input input-bordered focus:input-primary" 
                     {{on "input" this.handleInput}} 
                     required 
@@ -220,27 +211,11 @@
                 {{on "input" this.handleInput}} 
                 required 
               />
-              <label class="label">
-                <span class="label-text-alt text-base-content/60">
-                  Use 8+ characters with letters, numbers & symbols
-                </span>
-              </label>
             </div>
           </div>
         </div>
 
-        <div class="form-control">
-          <label class="label cursor-pointer justify-start gap-3">
-            <input type="checkbox" class="checkbox checkbox-primary" required />
-            <span class="label-text">
-              I agree to the 
-              <a href="#" class="link link-primary">Terms of Service</a> 
-              and 
-              <a href="#" class="link link-primary">Privacy Policy</a>
-            </span>
-          </label>
-        </div>
-
+        {{!-- Submit Button --}}
         <div class="form-control mt-8">
           <button class="btn btn-primary btn-lg w-full gap-2" type="submit">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

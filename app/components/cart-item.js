@@ -9,18 +9,19 @@ export default class CartItem extends Component {
   @service('cart') cartService;
 
   @tracked quantity;
+  @tracked selected = true;
 
   constructor() {
     super(...arguments);
-
-    // Defer quantity assignment only
     this.quantity = Math.min(this.args.item.quantity, this.args.item.product.stock);
+    this.selected = this.args.item.selected ?? true;
   }
 
   get item() {
     return {
       ...this.args.item,
-      quantity: this.quantity
+      quantity: this.quantity,
+      selected: this.selected
     };
   }
 
@@ -59,9 +60,10 @@ export default class CartItem extends Component {
 
   @action
   updateItemSelectionStatus() {
+    this.selected = !this.selected;
     this.args.toggleSelection({
       ...this.item,
-      selected: !this.item.selected
+      selected: this.selected
     });
   }
 }

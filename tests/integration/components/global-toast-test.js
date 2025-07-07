@@ -1,3 +1,4 @@
+
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'shopping-app/tests/helpers';
 import { render } from '@ember/test-helpers';

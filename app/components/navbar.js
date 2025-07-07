@@ -7,17 +7,17 @@ export default class Navbar extends Component {
     @service cart;
     @service offers;
 
-    @action
-    isLoggedIn() {
+    get isLoggedIn() {
         return this.session.isAuthenticated;
     }
 
     get favCount() {
-        return this.session.currentUser?.favourites?.length;
+        if (this.isLoggedIn) {
+            return this.session.currentUser.favourites.length;
+        }
     }
 
-    @action
-    getCartCount() {
+    get cartCount() {
         return this.cart.getCartCount();
     }
 

@@ -30,6 +30,7 @@ export default class ListCartProductsComponent extends Component {
 
   @action
   calculateSubtotal(items) {
+    console.log("triggering...", items)
     let total = 0;
 
     items.forEach(item => {
@@ -45,7 +46,7 @@ export default class ListCartProductsComponent extends Component {
         }
       }
     });
-
+    console.log(total)
     return total.toFixed(2);
   }
 
