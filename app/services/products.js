@@ -40,4 +40,9 @@ export default class ProductsService extends Service {
     const productRes = this.getProductById(id);
     return productRes.status ? productRes.data.stock : 0;
   }
+
+  getStockAvailability(pid) {
+    let prod = this.allProducts.find(prod => prod.id == pid)
+    return prod.stock;
+  }
 }

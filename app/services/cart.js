@@ -12,7 +12,7 @@ export default class CartService extends Service {
   }
 
   getCartCount() {
-    return this.allCartItems.reduce((sum, item) => sum + item.quantity, 0);
+    return this.allCartItems.reduce((sum, item) => sum + Math.min(item.quantity, this.products.getStockAvailability(item.pid)), 0);
   }
 
   loadCart() {
