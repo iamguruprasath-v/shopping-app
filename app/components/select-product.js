@@ -11,7 +11,6 @@ export default class SelectProduct extends Component {
 
     @action
     removeProduct(item) {
-        console.log("indeletion:", item)
         this.toggleSelection(item);
         this.allItems = this.allItems.filter(prod => prod.product.id !== item.product.id);
         if(this.allItems.length <= 0) this.selectedProducts = [];
@@ -20,7 +19,7 @@ export default class SelectProduct extends Component {
 
     @action
     toggleSelection(item) {
-        console.log("Toggling", item)
+
         let exists = this.selectedProducts.find(prod => prod.product.id === item.product.id);
         
         if (exists) {
@@ -34,7 +33,6 @@ export default class SelectProduct extends Component {
     updateQuantity(item) {
     let index = this.selectedProducts.findIndex(prod => prod.product.id === item.product.id);
     if (index !== -1) {
-        console.log("Updateing here")
         let updated = [...this.selectedProducts];
         updated[index] = item; // replace the old item with the new one
         this.selectedProducts = updated; // trigger reactivity

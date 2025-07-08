@@ -1,33 +1,37 @@
 {{#if this.isOpen}}
   <dialog id="pay_modal" class="modal modal-open" open>
-    <div class="modal-box max-w-3xl">
-      <h3 class="font-bold text-lg mb-4">Order Summary</h3>
+    <div class="modal-box max-w-4xl p-6 space-y-6 bg-base-100">
+      
+      <h3 class="text-2xl font-bold text-primary mb-4 border-b pb-2">🧾 Order Summary</h3>
 
-      <div class="overflow-x-auto">
-        <table class="table w-full text-sm">
-          <thead>
+      {{!-- 📦 Table --}}
+      <div class="overflow-x-auto rounded shadow">
+        <table class="table w-full text-sm table-zebra">
+          <thead class="text-base font-semibold bg-base-200">
             <tr>
-              <th>Product Name</th>
+              <th>Product</th>
               <th>Qty</th>
               <th>Price</th>
               <th>Offer</th>
-              <th>Total</th>
+              <th>Subtotal</th>
             </tr>
           </thead>
           <tbody>
             {{#each @selectedProducts as |item|}}
               <tr>
-                <td>{{item.product.title}}</td>
-                <td>{{item.quantity}}</td>
-                <td>${{item.product.price}}</td>
-                <td>
+                <td class="font-medium text-base-content">{{item.product.title}}</td>
+                <td class="text-center">{{item.quantity}}</td>
+                <td class="text-center">${{item.product.price}}</td>
+                <td class="text-center">
                   {{#if (this.isInOffer item.product.id)}}
-                    {{item.product.discountPercentage}}%
+                    <span class="badge badge-success badge-sm">
+                      -{{item.product.discountPercentage}}%
+                    </span>
                   {{else}}
-                    NA
+                    <span class="text-gray-400">NA</span>
                   {{/if}}
                 </td>
-                <td>
+                <td class="text-center font-semibold">
                   {{#if (this.isInOffer item.product.id)}}
                     ${{this.calculateDiscountedPrice item.product.price item.product.discountPercentage item.quantity}}
                   {{else}}
@@ -41,25 +45,33 @@
       </div>
 
       {{#if this.isPaying}}
-        <div class="mt-4 alert alert-info text-sm">
-          ⏳ Please wait a minute while we process your payment...
+        <div class="alert alert-info shadow-sm text-sm">
+          ⏳ Please wait a moment while we process your payment...
         </div>
       {{/if}}
 
-      {{!-- 📍 Billing Location Section --}}
-      <div class="mt-6">
-        <h4 class="text-base font-semibold mb-2 text-base-content">Billing Location</h4>
+      {{!-- 💳 Total Amount --}}
+      <div class="flex justify-end items-center mt-4">
+        <span class="text-lg font-semibold mr-2 text-base-content">Total:</span>
+        <span class="text-2xl font-bold text-primary">${{@total}}</span>
+      </div>
+
+      {{!-- 🧭 Billing Location --}}
+      <div class="pt-6 border-t mt-6">
+        <h4 class="text-base font-semibold mb-2 text-base-content">📍 Billing Location</h4>
         <LocationModal />
       </div>
 
-      <div class="modal-action">
-        <button class="btn btn-primary" type="button" {{on "click" this.payNow}} disabled={{this.isPaying}}>
-          Pay
+      {{!-- ✅ Actions --}}
+      <div class="modal-action mt-6">
+        <button class="btn btn-primary px-6" type="button" {{on "click" this.payNow}} disabled={{this.isPaying}}>
+          💳 Pay Now
         </button>
-        <button class="btn" type="button" {{on "click" this.closeModal}}>
-          Close
+        <button class="btn btn-outline" type="button" {{on "click" this.closeModal}}>
+          ❌ Cancel
         </button>
       </div>
+
     </div>
   </dialog>
 {{/if}}

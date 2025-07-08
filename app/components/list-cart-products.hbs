@@ -6,7 +6,8 @@
     <OrderSummary 
       @selectedProducts={{this.selectedProducts}} 
       @onClose={{this.closeModal}} 
-      @onPay={{fn this.handlePayment this.selectedProducts}} 
+      @onPay={{fn this.handlePayment this.selectedProducts}}
+      @total={{this.calculateSubtotal this.selectedProducts}} 
     />
   {{/if}}
 
@@ -25,7 +26,7 @@
         <button class="btn btn-outline btn-error" type="button" {{on "click" @clearCart}}>
           Clear Cart
         </button>
-        <button class="btn btn-primary" type="button" {{on "click" this.openModal}} >
+        <button class="btn btn-primary" type="button" {{on "click" this.openModal}} disabled={{if (eq selectedProducts.length 0) true}}>
           Proceed to Pay
         </button>
       </div>

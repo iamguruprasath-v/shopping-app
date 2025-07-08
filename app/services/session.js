@@ -26,6 +26,10 @@ export default class SessionService extends Service {
     return this.user;
   }
 
+  set currentUser(user) {
+    this.user = user;
+  }
+
   get isAuthenticated() {
     const expiry = localStorage.getItem('ssd_expiry');
     if (!this.user || !expiry || new Date() > new Date(expiry)) {
@@ -131,8 +135,7 @@ export default class SessionService extends Service {
 
     localStorage.setItem('users', JSON.stringify({ users: updatedList }));
     localStorage.setItem('ssd', JSON.stringify({ ...updatedUser }));
-
-    this.user = { ...updatedUser }; // 🔁 tracked reactivity trigger
+    this.currentUser = { ...updatedUser }; // 🔁 tracked reactivity trigger
   }
 
   addOrRemFav(id, flag) {

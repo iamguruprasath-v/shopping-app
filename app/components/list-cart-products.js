@@ -30,7 +30,7 @@ export default class ListCartProductsComponent extends Component {
 
   @action
   calculateSubtotal(items) {
-    console.log("triggering...", items)
+
     let total = 0;
 
     items.forEach(item => {
@@ -46,7 +46,6 @@ export default class ListCartProductsComponent extends Component {
         }
       }
     });
-    console.log(total)
     return total.toFixed(2);
   }
 
@@ -57,35 +56,31 @@ export default class ListCartProductsComponent extends Component {
 
   @action
   handlePayment(selectedProducts) {
-    // 1. Update stock & availability
+    // 1. Update stock
     selectedProducts.forEach(item => {
       let prod = item.product;
       prod.stock -= item.quantity;
-
       if (prod.stock <= 0) {
         prod.stock = 0;
         prod.availability = 'Out of Stock';
       }
-
       this.products.updateProduct(prod);
     });
 
     // 2. Create order
-    const order = this.cartService.createOrders({ 
+    const order = this.cartService.createOrders({
       products: selectedProducts,
       total: this.calculateSubtotal(selectedProducts),
     });
 
-    // 3. Remove from cart
-    selectedProducts.forEach(item => {
-      this.cartService.removeFromCart(item.product.id);
-    });
+    // ✅ 3. Remove all selected products at once
+    const productIds = selectedProducts.map(item => item.product.id);
+    this.cartService.removeMultipleFromCart(productIds);
 
-    // 4. Feedback
+    // 4. Toast and redirect
     this.toast.show("Payment Successful! Order placed ✅");
-
-    // 5. Go to orders page
     this.router.transitionTo('orders');
   }
+
 
 }

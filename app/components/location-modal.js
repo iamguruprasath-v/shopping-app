@@ -37,7 +37,6 @@ export default class LocationModal extends Component {
     if (!this.currentAddress) return 'Add delivery address';
     
     const { address, state, postalCode } = this.currentAddress;
-    console.log(address, state, postalCode)
     // Create a shortened display version
     const shortAddress = address.length > 25 ? `${address.substring(0, 25)}...` : address;
     return `${shortAddress}, ${state} ${postalCode}`;
@@ -51,13 +50,12 @@ export default class LocationModal extends Component {
 
   @action
   openModal() {
-    console.log('Opening modal...'); // Debug log
     this.isModalOpen = true;
     // If no address exists, start in edit mode
     if (!this.currentAddress) {
       this.isEditing = true;
     }
-    console.log('Modal state:', this.isModalOpen, 'Editing:', this.isEditing); // Debug log
+
   }
 
   @action

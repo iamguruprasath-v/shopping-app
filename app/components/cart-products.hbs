@@ -3,6 +3,7 @@
     <div class="flex items-center justify-between border-b border-gray-300 pb-3">
       <h1 class="text-3xl font-bold text-gray-800">🛒 Your Cart</h1>
     </div>
+    {{log this.cartItems}}
 
     <ListCartProducts @clearCart={{this.clearCart}} @products={{this.cartItems}} />
   </section>

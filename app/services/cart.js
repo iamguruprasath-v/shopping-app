@@ -5,6 +5,7 @@ export default class CartService extends Service {
   @service session;
   @service products;
   @service utils;
+  @service offers;
 
   // 🔁 Reactive getter
   get allCartItems() {
@@ -84,6 +85,21 @@ export default class CartService extends Service {
     this.session.updateUserToDB(updatedUser);
   }
 
+  removeMultipleFromCart(pids = []) {
+    const user = this.session.currentUser;
+    if (!user) return;
+
+    // ✅ Take only one snapshot of the cart
+    let cart = [...this.allCartItems];
+
+    // ✅ Remove all matching PIDs in one go
+    const updatedCart = cart.filter(item => !pids.includes(item.pid));
+
+    const updatedUser = { ...user, cart: updatedCart };
+    this.session.updateUserToDB(updatedUser);
+  }
+
+
   setDefaultOrderDetails(orderDetails) {
     return {
       ...orderDetails,
@@ -94,6 +110,10 @@ export default class CartService extends Service {
   }
 
   createOrders(orderDetails) {
+    orderDetails.products.forEach(prod => {
+      prod.offered = this.offers.isInOffer(prod.product.id);
+      
+    })
     try {
       const data = localStorage.getItem('orders');
       let orders = [];
@@ -109,7 +129,6 @@ export default class CartService extends Service {
         id: orders.length + 1,
         createdAt: new Date().toISOString(),
       });
-      console.log("new one", newOrder)
 
       orders.push(newOrder);
       localStorage.setItem('orders', JSON.stringify({ orders }));
