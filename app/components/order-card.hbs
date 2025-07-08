@@ -18,6 +18,15 @@
           </svg>
           Ordered on: {{this.formattedDate}}
         </p>
+        {{#if @order.isDelivered}}
+          <p class="text-sm text-gray-500 mt-1 flex items-center gap-1 ml-1">
+            <svg class="w-4 h-4" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Delivered on: <span class="font-medium text-gray-700">{{this.estimatedDeliveryDate}}</span>
+          </p>
+        {{/if}}
       </div>
 
       <button class="btn btn-sm btn-primary shadow-md hover:shadow-lg transform hover:scale-105 transition duration-200 flex items-center gap-2" {{on "click" this.openModal}}>
@@ -85,11 +94,13 @@
     </div>
   </div>
 </div>
+
+{{!-- 📦 MODAL --}}
 {{#if this.isModalOpen}}
   <dialog open class="modal modal-open">
     <div class="modal-box w-11/12 max-w-4xl rounded-2xl overflow-hidden animate-fade-in shadow-2xl border border-gray-200 bg-white/90 backdrop-blur-lg transition-all duration-300 scale-100">
 
-      {{!-- 🎯 Header --}}
+      {{!-- 🎯 Modal Header --}}
       <div class="bg-primary text-white px-6 py-4 rounded-t-2xl">
         <div class="flex justify-between items-center">
           <div>
@@ -101,6 +112,9 @@
               Order #{{@order.id}}
             </h3>
             <p class="text-xs text-white-500 mt-1">Ordered on: {{this.formattedDate}}</p>
+            {{#if @order.isDelivered}}
+              <p class="text-xs text-white-500 mt-0.5">Delivered on: {{this.estimatedDeliveryDate}}</p>
+            {{/if}}
           </div>
           <span class="badge badge-md px-4 py-2 text-sm font-medium shadow-md {{if @order.isDelivered 'bg-green-100 text-green-800' 'bg-yellow-100 text-yellow-800'}}">
             {{if @order.isDelivered "✓ Delivered" "⏳ Pending"}}
@@ -110,7 +124,8 @@
 
       {{!-- 📦 Order Items --}}
       <div class="p-6 max-h-[60vh] overflow-y-auto bg-white/90 backdrop-blur-sm space-y-6">
-        <table class="table table-zebra table-sm text-sm border rounded-md overflow-hidden shadow-sm">
+        {{!-- Products Table --}}
+         <table class="table table-zebra table-sm text-sm border rounded-md overflow-hidden shadow-sm">
           <thead class="bg-gray-50 text-gray-700 text-sm">
             <tr>
               <th class="py-2 px-3 text-left">🛒 Product</th>
@@ -142,6 +157,7 @@
             {{/each}}
           </tbody>
         </table>
+        {{!-- Your existing product table remains here... --}}
 
         {{!-- 🧮 Total Paid --}}
         <div class="text-right font-bold text-lg mt-6">
