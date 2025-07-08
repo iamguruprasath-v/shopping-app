@@ -1,6 +1,7 @@
 {{page-title "Favs"}}
 {{#if @model.favProducts.length}}
-  <ListProducts @searchFilteredProducts={{@model.favProducts}} />
+  {{!-- <ListProducts @searchFilteredProducts={{@model.favProducts}} @route="fav" /> --}}
+    <FilterProducts @products={{@model.favProducts}} @route="fav"/>
 {{else}}
   <div class="max-w-2xl mx-auto text-center mt-20 space-y-4">
     <NoAvailable @resourceType="Favourites" />

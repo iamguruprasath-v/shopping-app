@@ -11,6 +11,7 @@ export default class ListProducts extends Component {
 
   @tracked showToast = false;
   @tracked toastMsg = '';
+  @tracked isFav = this.args.route;
 
   @action
   isLoggedIn() {
