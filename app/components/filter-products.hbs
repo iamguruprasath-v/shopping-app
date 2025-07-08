@@ -16,7 +16,7 @@
     </label>
   </div>
 
-  <Sidebar @searchQuery={{this.searchQuery}} @searchFilteredRes={{this.searchedResult}} as |filteredProducts|>
-    <ListProducts @searchFilteredProducts={{filteredProducts}} />
+  <Sidebar @searchQuery={{this.searchQuery}} @searchFilteredRes={{this.searchedResult}} as |filteredProducts categorySelectionLength|>
+    <ListProducts @searchQuery={{this.searchQuery}} @searchFilteredProducts={{filteredProducts}} @categorySelectionLength={{categorySelectionLength}} />
   </Sidebar>
 </div>
