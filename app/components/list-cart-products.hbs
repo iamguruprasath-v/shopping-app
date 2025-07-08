@@ -8,6 +8,7 @@
       @onClose={{this.closeModal}} 
       @onPay={{fn this.handlePayment this.selectedProducts}}
       @total={{this.calculateSubtotal this.selectedProducts}} 
+      @estimatedDeliveryDate={{this.estimatedDeliveryDate}}
     />
   {{/if}}
 

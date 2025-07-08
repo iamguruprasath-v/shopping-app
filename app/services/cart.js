@@ -109,6 +109,7 @@ export default class CartService extends Service {
     };
   }
 
+
   createOrders(orderDetails) {
     orderDetails.products.forEach(prod => {
       prod.offered = this.offers.isInOffer(prod.product.id);
@@ -127,7 +128,6 @@ export default class CartService extends Service {
         ...orderDetails,
         userId: this.session.user.id,
         id: orders.length + 1,
-        createdAt: new Date().toISOString(),
       });
 
       orders.push(newOrder);

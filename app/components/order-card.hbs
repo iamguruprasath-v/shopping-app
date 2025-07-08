@@ -1,6 +1,6 @@
 <div class="flex justify-center px-4 py-6">
   <div class="card bg-gradient-to-br from-white to-slate-50 shadow-xl hover:shadow-2xl transition-all duration-300 p-6 rounded-2xl border border-gray-200 w-full max-w-4xl">
-    
+    {{log @order}}
     {{!-- 🔰 Header --}}
     <div class="flex justify-between items-start mb-4">
       <div>
@@ -16,7 +16,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
-          Ordered on: {{this.formattedDate}}
+          Ordered on: {{@order.createdAt}}
         </p>
         {{#if @order.isDelivered}}
           <p class="text-sm text-gray-500 mt-1 flex items-center gap-1 ml-1">
@@ -24,7 +24,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
-            Delivered on: <span class="font-medium text-gray-700">{{this.estimatedDeliveryDate}}</span>
+            Delivered on: <span class="font-medium text-gray-700">{{@order.deliveredOn}}</span>
           </p>
         {{/if}}
       </div>
@@ -111,9 +111,9 @@
               </svg>
               Order #{{@order.id}}
             </h3>
-            <p class="text-xs text-white-500 mt-1">Ordered on: {{this.formattedDate}}</p>
+            <p class="text-xs text-white-500 mt-1">Ordered on: {{@order.createdAt}}</p>
             {{#if @order.isDelivered}}
-              <p class="text-xs text-white-500 mt-0.5">Delivered on: {{this.estimatedDeliveryDate}}</p>
+              <p class="text-xs text-white-500 mt-0.5">Delivered on: {{@order.deliveredOn}}</p>
             {{/if}}
           </div>
           <span class="badge badge-md px-4 py-2 text-sm font-medium shadow-md {{if @order.isDelivered 'bg-green-100 text-green-800' 'bg-yellow-100 text-yellow-800'}}">

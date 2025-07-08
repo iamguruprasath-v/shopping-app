@@ -3,12 +3,22 @@ import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 
+const SHIPPING_VALUES_IN_DAYS = {
+  'Ships overnight': 1,
+  'Ships in 1 month': 30,
+  'Ships in 1 week': 7,
+  'Ships in 3-5 business days': 5,
+  'Ships in 2 weeks': 14,
+  'Ships in 1-2 business days': 2,
+};
+
 export default class ListCartProductsComponent extends Component {
   @service offers;
   @service('cart') cartService;
   @service toast;
   @service router;
   @service products;
+  @service utils;
 
   @tracked showPayModal = false;
   @tracked selectedProducts = [];
@@ -68,9 +78,12 @@ export default class ListCartProductsComponent extends Component {
     });
 
     // 2. Create order
-    const order = this.cartService.createOrders({
+    console.log(this.createdAt, this.estimatedDeliveryDate  )
+    this.cartService.createOrders({
       products: selectedProducts,
       total: this.calculateSubtotal(selectedProducts),
+      createdAt: this.createdAt,
+      deliveredOn: this.estimatedDeliveryDate
     });
 
     // ✅ 3. Remove all selected products at once
@@ -80,6 +93,28 @@ export default class ListCartProductsComponent extends Component {
     // 4. Toast and redirect
     this.toast.show("Payment Successful! Order placed ✅");
     this.router.transitionTo('orders');
+  }
+
+      // ✅ Formatted order date
+  get createdAt() {
+    const date = new Date();
+    return this.utils.formatDateTime(date);
+  }
+
+
+  get estimatedDeliveryDate() {
+    let products = this.selectedProducts ?? [];
+    let max = -1;
+
+    products.forEach((prod) => {
+      const key = prod?.product?.shippingInformation;
+      const days = SHIPPING_VALUES_IN_DAYS[key] ?? 3;
+      max = Math.max(max, days);
+    });
+
+    const createdAt = new Date(this.createdAt);
+    createdAt.setDate(createdAt.getDate() + max);
+    return this.utils.formatDateTime(createdAt);
   }
 
 

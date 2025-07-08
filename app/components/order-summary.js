@@ -3,8 +3,11 @@ import { action } from '@ember/object';
 import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
+
+
 export default class OrderSummary extends Component {
   @service offers;
+  @service utils;
   @tracked isPaying = false;
   @tracked isOpen = true;
 
@@ -45,4 +48,5 @@ export default class OrderSummary extends Component {
       }
     }, 3000); // 3 seconds for testing
   }
+
 }

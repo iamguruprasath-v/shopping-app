@@ -2,6 +2,7 @@
   <dialog id="pay_modal" class="modal modal-open" open>
     <div class="modal-box max-w-4xl p-6 space-y-6 bg-base-100">
       
+      {{!-- 🧾 Heading --}}
       <h3 class="text-2xl font-bold text-primary mb-4 border-b pb-2">🧾 Order Summary</h3>
 
       {{!-- 📦 Table --}}
@@ -17,6 +18,7 @@
             </tr>
           </thead>
           <tbody>
+            {{log @selectedProducts}}
             {{#each @selectedProducts as |item|}}
               <tr>
                 <td class="font-medium text-base-content">{{item.product.title}}</td>
@@ -50,13 +52,19 @@
         </div>
       {{/if}}
 
+      {{!-- 🚚 Estimated Delivery --}}
+      <div class="flex items-center justify-between bg-blue-50 text-blue-800 text-sm font-medium px-4 py-3 rounded-lg border border-blue-200 shadow">
+        <span>📦 Estimated Delivery Date:</span>
+        <span class="font-semibold">{{@estimatedDeliveryDate}}</span>
+      </div>
+
       {{!-- 💳 Total Amount --}}
       <div class="flex justify-end items-center mt-4">
         <span class="text-lg font-semibold mr-2 text-base-content">Total:</span>
         <span class="text-2xl font-bold text-primary">${{@total}}</span>
       </div>
 
-      {{!-- 🧭 Billing Location --}}
+      {{!-- 📍 Billing Location --}}
       <div class="pt-6 border-t mt-6">
         <h4 class="text-base font-semibold mb-2 text-base-content">📍 Billing Location</h4>
         <LocationModal />
