@@ -33,7 +33,16 @@
     <p class="text-xs line-clamp-2">{{@product.description}}</p>
 
     <div class="mt-2">
-      <span class="text-primary font-bold text-lg">${{@product.price}}</span>
+      {{#if this.isInOffer}}
+      <span class="line-through text-red-500 text-lg opacity-80 ">
+        ${{@product.price}}
+      </span>
+      <span class="text-primary font-bold text-lg ms-2">${{calculate-offer @product.discountPercentage @product.price}}</span>
+      {{else}}
+      <span class="text-primary font-bold text-lg">
+        ${{@product.price}}
+      </span>
+      {{/if}}
     </div>
 
     {{#if @isLoggedIn}}
