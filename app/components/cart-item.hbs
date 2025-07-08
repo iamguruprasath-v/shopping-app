@@ -46,13 +46,11 @@
       {{/if}}
     </div>
 
-    <div class="flex items-center gap-2 text-xs text-gray-600">
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-600">
       <span>★ {{this.item.product.rating}} / 5</span>
       <span>| Warranty: 1 year</span>
-      <span>| Delivery by {{this.item.product.deliveryETA}}</span>
+      <span>| Ships: Shipping in {{get this.SHIPPING_VALUES_IN_DAYS this.item.product.shippingInformation}} Days</span>
     </div>
-
-    <p class="text-xs text-gray-500 italic">{{this.item.product.shippingInformation}}</p>
   </div>
 
   {{!-- Quantity & Actions --}}

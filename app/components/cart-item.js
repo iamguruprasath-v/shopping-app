@@ -11,6 +11,16 @@ export default class CartItem extends Component {
   @tracked quantity;
   @tracked selected = true;
 
+  SHIPPING_VALUES_IN_DAYS = {
+  'Ships overnight': 1,
+  'Ships in 1 month': 30,
+  'Ships in 1 week': 7,
+  'Ships in 3-5 business days': 5,
+  'Ships in 2 weeks': 14,
+  'Ships in 1-2 business days': 2,
+};
+
+
   constructor() {
     super(...arguments);
     this.quantity = Math.min(this.args.item.quantity, this.args.item.product.stock);
