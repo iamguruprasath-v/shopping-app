@@ -28,7 +28,7 @@ export default class RegisterController extends Controller {
   @tracked registerSuccess = false;
 
   @action
-  async register(e) {
+  register(e) {
     e.preventDefault();
 
     const userDetails = {
@@ -45,7 +45,7 @@ export default class RegisterController extends Controller {
       }
     };
 
-    const response = await this.session.registerNewUser(userDetails);
+    const response = this.session.registerNewUser(userDetails);
     this.registerSuccess = response.success;
     this.registerMessage = response.message;
 

@@ -20,47 +20,46 @@ const ERROR_CODES = {
 
 export default class SessionService extends Service {
   @service utils;
-  @tracked user = JSON.parse(localStorage.getItem('ssd'));
+  @tracked _user = JSON.parse(localStorage.getItem('ssd'));
+
+  constructor() {
+    super(...arguments);
+    if(!this.isAuthenticated) this.currentUser = null 
+  }
 
   get currentUser() {
-    return this.user;
+    return this._user;
   }
 
   set currentUser(user) {
-    this.user = user;
+    this._user = user;
   }
 
   get isAuthenticated() {
     const expiry = localStorage.getItem('ssd_expiry');
-    if (!this.user || !expiry || new Date() > new Date(expiry)) {
+    if (!this.currentUser || !expiry || new Date() > new Date(expiry)) {
       return false;
     }
     return true;
   }
 
-  async getAllUsers() {
+  getAllUsers() {
     const data = localStorage.getItem('users');
     return data ? JSON.parse(data).users : [];
   }
 
-  async getUserByEmail(email) {
-    if (!email?.trim()) {
-      return this.utils.createResponse(false, 'Email is required', null, ERROR_CODES.INVALID_CREDENTIALS);
-    }
-
-    const users = await this.getAllUsers();
+  getUserByEmail(email) {
+    const users = this.getAllUsers();
     const user = users.find(u => u.email?.toLowerCase() === email.toLowerCase());
 
     if (!user) {
       return this.utils.createResponse(false, MESSAGES.USER_NOT_FOUND, null, ERROR_CODES.USER_NOT_FOUND);
     }
-
-    const { password, ...safeUser } = user;
-    return this.utils.createResponse(true, MESSAGES.USER_FOUND, safeUser);
+    return this.utils.createResponse(true, MESSAGES.USER_FOUND, user);
   }
 
-  async #validateCredentials(email, password) {
-    const users = await this.getAllUsers();
+  #validateCredentials(email, password) {
+    const users = this.getAllUsers();
     const user = users.find(u => u.email?.toLowerCase() === email.toLowerCase() && u.password === password);
 
     if (!user) {
@@ -79,29 +78,25 @@ export default class SessionService extends Service {
     };
   }
 
-  async login({ email, password }) {
-    if (!email || !password) {
-      return this.utils.createResponse(false, 'Email and password are required');
-    }
-
-    const validation = await this.#validateCredentials(email, password);
+  login({ email, password }) {
+    const validation = this.#validateCredentials(email, password);
     if (!validation.success) return validation;
 
-    this.user = { ...validation.data };
+    this.currentUser = { ...validation.data };
 
-    localStorage.setItem('ssd', JSON.stringify(this.user));
+    localStorage.setItem('ssd', JSON.stringify(this.currentUser));
     localStorage.setItem('ssd_expiry', this.utils.extendDate(new Date(), 2));
 
-    return this.utils.createResponse(true, MESSAGES.LOGIN_SUCCESS, this.user);
+    return this.utils.createResponse(true, MESSAGES.LOGIN_SUCCESS, this.currentUser);
   }
 
-  async registerNewUser(userDetails) {
-    const existing = await this.getUserByEmail(userDetails.email);
+  registerNewUser(userDetails) {
+    const existing = this.getUserByEmail(userDetails.email);
     if (existing.success) {
       return this.utils.createResponse(false, 'User already exists');
     }
 
-    const allUsers = await this.getAllUsers();
+    const allUsers = this.getAllUsers();
     const newUser = this.setDefaultUserDetails(userDetails);
 
     allUsers.push(newUser);
@@ -111,11 +106,12 @@ export default class SessionService extends Service {
   }
 
   logout() {
-    this.user = null;
+    this.currentUser = null;
     localStorage.removeItem('ssd');
     localStorage.removeItem('ssd_expiry');
   }
 
+  // Currently not used this method but will be usefull for future.
   keepCurrUserLoggedIn() {
     const currUser = JSON.parse(localStorage.getItem('ssd'));
     const expiry = localStorage.getItem('ssd_expiry');
@@ -124,18 +120,18 @@ export default class SessionService extends Service {
       return this.utils.createResponse(false, MESSAGES.SESSION_EXPIRED, null, ERROR_CODES.SESSION_EXPIRED);
     }
 
-    this.user = { ...currUser };
+    this.currentUser = { ...currUser };
     localStorage.setItem('ssd_expiry', this.utils.extendDate(new Date(), 2));
-    return this.utils.createResponse(true, 'Session extended', this.user);
+    return this.utils.createResponse(true, 'Session extended', this.currentUser);
   }
 
-  async updateUserToDB(updatedUser) {
-    const allUsers = await this.getAllUsers();
+  updateUserToDB(updatedUser) {
+    const allUsers = this.getAllUsers();
     const updatedList = allUsers.map(user => user.id === updatedUser.id ? updatedUser : user);
 
     localStorage.setItem('users', JSON.stringify({ users: updatedList }));
     localStorage.setItem('ssd', JSON.stringify({ ...updatedUser }));
-    this.currentUser = { ...updatedUser }; // 🔁 tracked reactivity trigger
+    this.currentUser = { ...updatedUser }
   }
 
   addOrRemFav(id, flag) {
@@ -146,14 +142,14 @@ export default class SessionService extends Service {
 
     if (flag === 1 && !users[index].favourites.includes(id)) {
       users[index].favourites.push(id);
-      this.user.favourites.push(id);
+      this.currentUser.favourites.push(id);
     } else if (flag === 0 && users[index].favourites.includes(id)) {
       users[index].favourites = users[index].favourites.filter(pid => pid !== id);
-      this.user.favourites = this.user.favourites.filter(pid => pid !== id);
+      this.currentUser.favourites = this.currentUser.favourites.filter(pid => pid !== id);
     }
 
     localStorage.setItem('users', JSON.stringify({ users }));
-    localStorage.setItem('ssd', JSON.stringify(this.user));
-    this.user = { ...this.user }; // 🔁 trigger tracked
+    localStorage.setItem('ssd', JSON.stringify(this.currentUser));
+    this.currentUser = { ...this.currentUser };
   }
 }

@@ -8,12 +8,10 @@ export default class FavIcon extends Component {
 
 
     get currUser() {
-        // console.log(this.session.currUser)
         return this.session.currentUser;
     }
 
     get isFavourite() {
-        // console.log(this.currUser)
         return this.currUser?.favourites?.includes(this.args.prod.id);
     }
 

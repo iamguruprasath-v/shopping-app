@@ -78,7 +78,6 @@ export default class ListCartProductsComponent extends Component {
     });
 
     // 2. Create order
-    console.log(this.createdAt, this.estimatedDeliveryDate  )
     this.cartService.createOrders({
       products: selectedProducts,
       total: this.calculateSubtotal(selectedProducts),
@@ -86,7 +85,7 @@ export default class ListCartProductsComponent extends Component {
       deliveredOn: this.estimatedDeliveryDate
     });
 
-    // ✅ 3. Remove all selected products at once
+    // 3. Remove all selected products at once
     const productIds = selectedProducts.map(item => item.product.id);
     this.cartService.removeMultipleFromCart(productIds);
 
@@ -95,7 +94,7 @@ export default class ListCartProductsComponent extends Component {
     this.router.transitionTo('orders');
   }
 
-      // ✅ Formatted order date
+    // 5. Formatted order date
   get createdAt() {
     const date = new Date();
     return this.utils.formatDateTime(date);

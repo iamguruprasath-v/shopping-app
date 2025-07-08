@@ -3,16 +3,8 @@
 {{/if}}
 <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
   {{#each @searchFilteredProducts as |product|}}
-    
-    {{#if (this.isProductInStock product.id)}}
-      <LinkTo @route="product" @model={{product.id}}>
-        <ProductCard @product={{product}} @isLoggedIn={{this.isLoggedIn}} @triggerToast={{this.triggerToast}} @toastMsg={{this.toastMsg}} @showToast={{this.showToast}}/>
-      </LinkTo>
-    {{else}}
-      <div class="opacity-50 grayscale pointer-events-none">
-        <ProductCard @product={{product}} @isLoggedIn={{this.isLoggedIn}} @triggerToast={{this.triggerToast}} />
-      </div>
-    {{/if}}
-
+    <LinkTo @route="product" @model={{product.id}} class={{if (this.isProductInStock product.id) "" "pointer-events-none"}}>
+      <ProductCard @product={{product}} @isLoggedIn={{this.isLoggedIn}}/>
+    </LinkTo>
   {{/each}}
 </div>

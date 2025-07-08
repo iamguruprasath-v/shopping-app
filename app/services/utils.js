@@ -18,7 +18,7 @@ export default class UtilsService extends Service {
    *   extendDate(new Date(), 2); // Returns a new date two days in the future
    */
   extendDate(date, extendedDays) {
-    const clonedDate = new Date(date); // Clone to avoid mutating original
+    const clonedDate = new Date(date);
     clonedDate.setDate(clonedDate.getDate() + extendedDays);
     return clonedDate;
   }
@@ -42,8 +42,6 @@ export default class UtilsService extends Service {
     };
   }
 
-
-    // ✅ Reusable formatter
   formatDateTime(dateObj) {
     return dateObj.toLocaleString('en-IN', {
       day: '2-digit',

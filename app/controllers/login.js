@@ -13,7 +13,7 @@ export default class LoginController extends Controller {
   @tracked loginSuccess = null; // null for neutral, true/false for color logic
 
   @action
-  async login(e) {
+  login(e) {
     e.preventDefault();
 
     // Client-side required field check
@@ -23,7 +23,7 @@ export default class LoginController extends Controller {
       return;
     }
 
-    const loginResponse = await this.session.login({
+    const loginResponse = this.session.login({
       email: this.email,
       password: this.password
     });

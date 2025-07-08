@@ -42,7 +42,7 @@ export default class CartItem extends Component {
   @action
   addQuantity() {
     if (this.quantity >= this.item.product.stock) {
-      return this.toast.show(`Only ${this.item.product.stock} in stock`);
+      return this.toast.show(`Only ${this.item.product.stock} in stock left`);
     }
 
     this.quantity++;

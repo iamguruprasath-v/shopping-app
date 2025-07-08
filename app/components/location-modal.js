@@ -1,4 +1,3 @@
-// app/components/location-modal.js
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
@@ -18,7 +17,6 @@ export default class LocationModal extends Component {
   constructor() {
     super(...arguments);
     this.initializeAddress();
-    // Create a destination element for the modal portal
     this.destinationElement = document.body;
   }
 
@@ -37,7 +35,6 @@ export default class LocationModal extends Component {
     if (!this.currentAddress) return 'Add delivery address';
     
     const { address, state, postalCode } = this.currentAddress;
-    // Create a shortened display version
     const shortAddress = address.length > 25 ? `${address.substring(0, 25)}...` : address;
     return `${shortAddress}, ${state} ${postalCode}`;
   }
@@ -51,7 +48,6 @@ export default class LocationModal extends Component {
   @action
   openModal() {
     this.isModalOpen = true;
-    // If no address exists, start in edit mode
     if (!this.currentAddress) {
       this.isEditing = true;
     }
@@ -68,7 +64,6 @@ export default class LocationModal extends Component {
   @action
   enableEdit() {
     this.isEditing = true;
-    // Reset form to current saved values
     const userAddress = this.session.currentUser?.address;
     if (userAddress) {
       this.address = { ...userAddress };
@@ -91,7 +86,7 @@ export default class LocationModal extends Component {
   }
 
   @action
-  async saveAddress(event) {
+  saveAddress(event) {
     event.preventDefault();
     
     if (!this.isFormValid) {
@@ -107,7 +102,7 @@ export default class LocationModal extends Component {
         address: { ...this.address }
       };
       
-      await this.session.updateUserToDB(updatedUser);
+      this.session.updateUserToDB(updatedUser);
       this.isEditing = false;
       this.showSuccess('Address updated successfully');
       
@@ -121,22 +116,17 @@ export default class LocationModal extends Component {
 
   @action
   handleBackdropClick(event) {
-    // Close modal when clicking on backdrop
     if (event.target === event.currentTarget) {
       this.closeModal();
     }
   }
 
   showSuccess(message) {
-    // You can integrate with your notification service here
     console.log('Success:', message);
-    // Example: this.notifications.success(message);
   }
 
   showError(message) {
-    // You can integrate with your notification service here
     console.error('Error:', message);
-    // Example: this.notifications.error(message);
   }
 
   @action
@@ -145,6 +135,6 @@ export default class LocationModal extends Component {
   }  
   @action
   stopPropagation(e) {
-      e.stopPropagation(); // prevents modal close when clicking inside box
+      e.stopPropagation();
   }
 }

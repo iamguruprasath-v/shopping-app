@@ -10,32 +10,19 @@ export default class OfferedProducts extends Component {
   @service('cart') cartService;
   @service toast;
 
-  @tracked showToast = false;
-  @tracked toastMsg = '';
 
   @action
   isLoggedIn() {
     return this.session.isAuthenticated;
   }
-
+  
   @action
-  triggerToast(msg) {
-    this.toastMsg = msg;
-    this.showToast = true;
-
-    // Auto-dismiss after 2s
-    setTimeout(() => {
-      this.showToast = false;
-    }, 2000);
-  }
-
-  @action
-  async addToCart(id, event) {
+  addToCart(id, event) {
     event.preventDefault();
     event.stopPropagation();
 
     try {
-      let res = await this.cartService.addToCart(id, 1);
+      let res = this.cartService.addToCart(id, 1);
       this.toast.show(res.message);
     } catch (error) {
       console.log(error)

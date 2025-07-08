@@ -7,7 +7,6 @@ export default class CartService extends Service {
   @service utils;
   @service offers;
 
-  // 🔁 Reactive getter
   get allCartItems() {
     return this.session.currentUser?.cart || [];
   }
@@ -47,7 +46,7 @@ export default class CartService extends Service {
     const total = currentQty + quantity;
 
     if (total > prod.data.stock) {
-      return this.utils.createResponse(false, `Only ${prod.data.stock - currentQty} left in stock`);
+      return this.utils.createResponse(false, "All quantity of selected items has been added to cart please proceed to buy");
     }
 
     if (existing) {
@@ -89,10 +88,8 @@ export default class CartService extends Service {
     const user = this.session.currentUser;
     if (!user) return;
 
-    // ✅ Take only one snapshot of the cart
     let cart = [...this.allCartItems];
 
-    // ✅ Remove all matching PIDs in one go
     const updatedCart = cart.filter(item => !pids.includes(item.pid));
 
     const updatedUser = { ...user, cart: updatedCart };
@@ -126,7 +123,7 @@ export default class CartService extends Service {
 
       const newOrder = this.setDefaultOrderDetails({
         ...orderDetails,
-        userId: this.session.user.id,
+        userId: this.session.currentUser.id,
         id: orders.length + 1,
       });
 

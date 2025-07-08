@@ -6,7 +6,7 @@ export default class ProductCardComponent extends Component {
   @service offers;
   @service session;
   @service('cart') cartService;
-  @service toast;
+  @service toast; 
 
   get isInOffer() {
     return this.offers.isInOffer(this.args.product.id);
@@ -19,12 +19,12 @@ export default class ProductCardComponent extends Component {
   }
 
   @action
-  async addToCart(event) {
+  addToCart(event) {
     event.preventDefault();
     event.stopPropagation();
 
     try {
-      let res = await this.cartService.addToCart(this.args.product.id, 1);
+      let res = this.cartService.addToCart(this.args.product.id, 1);
       this.toast.show(res.message);
     } catch (error) {
       console.log(error)
