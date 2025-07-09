@@ -5,6 +5,7 @@ import { service } from '@ember/service';
 
 export default class LocationModal extends Component {
   @service session;
+  @service toast;
   @tracked isModalOpen = false;
   @tracked isEditing = false;
   @tracked isSaving = false;
@@ -17,7 +18,6 @@ export default class LocationModal extends Component {
   constructor() {
     super(...arguments);
     this.initializeAddress();
-    this.destinationElement = document.body;
   }
 
   initializeAddress() {
@@ -28,7 +28,7 @@ export default class LocationModal extends Component {
   }
 
   get currentAddress() {
-    return this.session.currentUser?.address;
+    return this.address;
   }
 
   get displayAddress() {
@@ -48,10 +48,6 @@ export default class LocationModal extends Component {
   @action
   openModal() {
     this.isModalOpen = true;
-    if (!this.currentAddress) {
-      this.isEditing = true;
-    }
-
   }
 
   @action
@@ -64,10 +60,6 @@ export default class LocationModal extends Component {
   @action
   enableEdit() {
     this.isEditing = true;
-    const userAddress = this.session.currentUser?.address;
-    if (userAddress) {
-      this.address = { ...userAddress };
-    }
   }
 
   @action
@@ -96,22 +88,24 @@ export default class LocationModal extends Component {
 
     this.isSaving = true;
     
-    try {
-      const updatedUser = {
-        ...this.session.currentUser,
-        address: { ...this.address }
-      };
-      
-      this.session.updateUserToDB(updatedUser);
-      this.isEditing = false;
-      this.showSuccess('Address updated successfully');
-      
-    } catch (error) {
-      console.error('Error saving address:', error);
-      this.showError('Failed to save address. Please try again.');
-    } finally {
-      this.isSaving = false;
-    }
+    setTimeout(() => {
+      try {
+        const updatedUser = {
+          ...this.session.currentUser,
+          address: { ...this.address }
+        };
+        
+        this.session.updateUserToDB(updatedUser);
+        this.isEditing = false;
+        this.showSuccess('Address updated successfully');
+        
+      } catch (error) {
+        console.error('Error saving address:', error);
+        this.showError('Failed to save address. Please try again.');
+      } finally {
+        this.isSaving = false;
+      }
+    }, 5000)
   }
 
   @action
@@ -122,19 +116,16 @@ export default class LocationModal extends Component {
   }
 
   showSuccess(message) {
-    console.log('Success:', message);
+    this.toast.show(message)
   }
 
   showError(message) {
-    console.error('Error:', message);
+    this.toast.show(message)
   }
 
   @action
   handleModalMount(modalEl) {
+    console.dir(modalEl.showModal)
       modalEl?.showModal?.();
-  }  
-  @action
-  stopPropagation(e) {
-      e.stopPropagation();
   }
 }

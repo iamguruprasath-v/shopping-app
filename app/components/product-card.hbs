@@ -1,26 +1,28 @@
 <div class="card bg-base-100 shadow-md hover:shadow-xl transition-shadow duration-300 relative hover:bg-base-300 p-4 rounded">
-
-    {{#unless this.isInStock}}
-    <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none overflow-hidden z-20">
-        <div 
-        class="w-[200%] bg-red-600 text-white text-[10px] sm:text-lg font-bold uppercase text-center shadow-md py-5"
-        >
-        Out of Stock
-        </div>
-    </div>
-    {{/unless}}
-
-
-
-
   <figure class="p-4">
     <img src={{@product.thumbnail}} alt={{@product.title}} class="rounded-xl h-40 object-cover w-full" />
   </figure>
 
   {{#if @isLoggedIn}}
-    <FavIcon @prod={{@product}} @notify={{@triggerToast}} />
+    <FavIcon 
+      @prod={{@product}} 
+      @notify={{@triggerToast}} 
+      class="absolute top-2 right-2 z-50"
+      style="pointer-events: auto !important;"
+    />
   {{/if}}
+  
   <GlobalToast />
+  
+  {{#unless this.isInStock}}
+    <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center overflow-hidden z-20">
+      <div 
+        class="w-[200%] bg-red-600 text-white text-[10px] sm:text-lg font-bold uppercase text-center shadow-md py-5 transform -rotate-12"
+      >
+        Out of Stock
+      </div>
+    </div>
+  {{/unless}}
 
   <div class="card-body p-4">
     <h2 class="card-title text-sm font-semibold">

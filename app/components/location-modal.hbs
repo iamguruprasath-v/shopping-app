@@ -13,10 +13,10 @@
   </button>
 </div>
 
-{{!-- DaisyUI Modal using native <dialog> --}}
+
 {{#if this.isModalOpen}}
   <dialog class="modal modal-open" {{did-insert this.handleModalMount}} {{on "click" this.handleBackdropClick}}>
-    <div class="modal-box w-11/12 max-w-2xl relative" {{on "click" this.stopPropagation}}>
+    <div class="modal-box w-11/12 max-w-2xl relative">
       <div class="flex justify-between items-center mb-6">
         <h3 class="font-bold text-lg">
           {{#if this.isEditing}}Edit Your Address{{else}}Your Address{{/if}}
